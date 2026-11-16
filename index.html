@@ -156,7 +156,9 @@
   @media (max-width:900px){
     .services,.process{grid-template-columns:1fr 1fr;}
     .case-grid,.rates{grid-template-columns:1fr;}
-    .nav-links a{display:none;}
+    .nav-links{gap:10px;}
+    .nav-links a:not(.btn){display:none;}
+    .nav-links a.btn{display:inline-block;padding:9px 12px;font-size:12.5px;}
   }
   @media (max-width:620px){
     .services,.process{grid-template-columns:1fr;}
