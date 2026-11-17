@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-.pick{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--ink);margin:0 0 clamp(24px,3vw,38px);font-family:var(--mono);font-size:11.5px;line-height:1.5;color:var(--body)}.pick span{display:flex;gap:8px;align-items:baseline;padding:11px 16px}.pick span+span{border-left:1px solid var(--ink)}.pick b{font-weight:600;color:var(--ink);white-space:nowrap}@media (max-width:700px){.pick{grid-template-columns:1fr;font-size:11px}.pick span+span{border-left:0;border-top:1px solid var(--ink)}}
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -230,6 +229,11 @@
   .audit-copy ul{margin:16px 0 22px;padding:0;list-style:none;display:grid;gap:9px;font-size:13.5px;color:var(--body);}
   .audit-copy li{display:flex;gap:9px;}
   .audit-copy li::before{content:"→";color:var(--accent);font-family:var(--mono);font-size:10px;margin-top:4px;}
+  .pick{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--ink);margin:0 0 clamp(24px,3vw,38px);font-family:var(--mono);font-size:11.5px;line-height:1.5;color:var(--body);}
+  .pick span{display:flex;gap:8px;align-items:baseline;padding:11px 16px;}
+  .pick span+span{border-left:1px solid var(--ink);}
+  .pick b{font-weight:600;color:var(--ink);white-space:nowrap;}
+  @media (max-width:700px){.pick{grid-template-columns:1fr;font-size:11px}.pick span+span{border-left:0;border-top:1px solid var(--ink)}}
   .audit-card{border:1px solid var(--ink);background:var(--paper);}
   .audit-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--ink);font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;}
   .audit-head span:last-child{color:var(--muted);}
@@ -632,6 +636,12 @@ Caused by: java.lang.NoSuchMethodError:
   </section>
 
   <section class="sec" id="audit">
+    <div class="wrap">
+      <div class="pick reveal">
+        <span>Server lags but runs → <b>$35 audit</b></span>
+        <span>One plugin broken → <b>$25 triage</b>, credited to the fix</span>
+      </div>
+    </div>
     <div class="wrap split">
       <div class="side reveal">
         <span class="idx">02 / Performance audit</span>
