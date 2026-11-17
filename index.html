@@ -238,6 +238,8 @@
   .contact h2{margin:0 0 12px;}
   .contact p{color:var(--muted);margin:0 0 22px;max-width:44ch;}
   .contact-links{display:flex;gap:10px;flex-wrap:wrap;}
+  .contact-hint{margin-top:12px;font-size:13px;color:var(--muted);max-width:46ch;}
+  .contact-hint b{color:var(--cream);font-weight:600;}
   .brief{background:var(--panel-2);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
   .brief-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);}
   .brief-head span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
@@ -693,8 +695,10 @@ Outstanding <span class="warn">90.00</span> · Unmatched <span class="warn">1</s
       <p>Include the server version, what broke and when, plus your deadline. You get a scope and a fixed price — or a clear no.</p>
       <div class="contact-links">
         <a class="btn btn-primary" href="https://builtbybit.com/members/pirateleague.998043/" rel="noopener">Message me on BuiltByBit</a>
+        <button class="btn btn-ghost" id="discordBtn" type="button" data-user="33slaxt" aria-label="Copy Discord username 33slaxt">Discord — 33slaxt</button>
         <a class="btn btn-ghost" href="https://old.reddit.com/user/pirateleage" rel="noopener">Reddit — u/pirateleage</a>
       </div>
+      <p class="contact-hint">DM me on Discord at <b>33slaxt</b> — click the button to copy the username. Send your server version, the plugin and the error in the first message.</p>
       <p style="margin-top:16px;font-size:13px">Prefer the marketplace? My live BuiltByBit offer: <a href="https://builtbybit.com/threads/lagaudit-custom-paper-work-%E2%80%94-diagnostics-fixes-small-features-ltc-escrow.744997/" rel="noopener" style="color:var(--gold)">LagAudit &amp; custom Paper work</a>.</p>
     </div>
     <div class="brief reveal">
@@ -720,7 +724,7 @@ Budget:</pre>
   <div class="wrap">
     <div class="foot">
       <div>© <span id="year">2026</span> PirateLeague Dev · Netherlands · CET</div>
-      <div><a href="#top">Back to top</a> · Paper · Discord · Python · Java</div>
+      <div><a href="#top">Back to top</a> · Discord: <span class="mono">33slaxt</span> · Paper · Python · Java</div>
     </div>
     <div class="disclaimer">
       LagAudit, TicketDesk and Invoice Reconciler are self-built demo projects, not paid client work. No testimonials, client names or reviews are invented.
@@ -835,6 +839,21 @@ Budget:</pre>
         b.appendChild(s);
         setTimeout(() => s.remove(), 650);
       });
+    });
+  }
+
+  const discordBtn = document.getElementById('discordBtn');
+  if (discordBtn) {
+    discordBtn.addEventListener('click', async () => {
+      const user = discordBtn.dataset.user;
+      const old = discordBtn.textContent;
+      try {
+        await navigator.clipboard.writeText(user);
+        discordBtn.textContent = 'Copied — ' + user;
+      } catch {
+        discordBtn.textContent = 'Discord: ' + user;
+      }
+      setTimeout(() => { discordBtn.textContent = old; }, 1800);
     });
   }
 
