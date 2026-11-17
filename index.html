@@ -78,6 +78,9 @@
   .nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--ease)}
   .nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
   .nav-links a.active{color:var(--ink)}
+  .nav-links a.nav-cta{color:var(--accent-ink);padding:9px 16px;white-space:nowrap}
+  .nav-links a.nav-cta:hover{color:var(--accent-ink)}
+  .nav-links a.nav-cta::after{display:none}
   .menu{display:none;background:transparent;border:1px solid var(--line-2);border-radius:10px;color:var(--ink);width:40px;height:40px;place-items:center;cursor:pointer}
 
   /* ---------- buttons ---------- */
@@ -141,6 +144,39 @@
   .card p{margin:0 0 20px;font-size:14px;color:var(--muted);line-height:1.62}
   .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
   .chips span{padding:4px 9px;border:1px solid var(--line);border-radius:999px;font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--body)}
+
+  /* ---------- console proof ---------- */
+  .logs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .log{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#060708}
+  .log-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 15px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+  .dots{display:flex;gap:4px}
+  .dots i{width:6px;height:6px;border-radius:50%;background:#2b3035}
+  .log pre{margin:0;padding:16px;font-family:var(--mono);font-size:11.5px;line-height:1.8;color:#cfd4d8;white-space:pre-wrap;overflow-wrap:anywhere}
+  .log .e{color:#ff8b7a}
+  .log .ok{color:#8ae89a}
+  .log .w{color:#ffd479}
+  .log .d{color:#6d757c}
+  .log-bad .log-bar span:last-child{color:#ff8b7a}
+  .log-ok .log-bar span:last-child{color:#8ae89a}
+  .log-cap{margin:14px 0 0;font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+
+  /* ---------- audit ---------- */
+  .audit{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(26px,4vw,54px);align-items:start}
+  .audit h2{font-family:var(--display);font-size:clamp(1.85rem,3.5vw,2.9rem);line-height:1.03;letter-spacing:-.04em;font-weight:600;margin-bottom:14px}
+  .audit ul{margin:20px 0 24px;padding:0;list-style:none;display:grid;gap:9px;font-size:14px;color:var(--body)}
+  .audit li{display:flex;gap:9px;line-height:1.55}
+  .audit li::before{content:"→";font-family:var(--mono);font-size:10px;color:var(--accent);margin-top:3px;flex:none}
+  .report{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card)}
+  .report-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .kv{margin:0}
+  .kv div{display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px;padding:9px 16px;border-bottom:1px solid var(--line)}
+  .kv dt{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-top:3px;margin:0}
+  .kv dd{margin:0;font-family:var(--mono);font-size:11.5px;color:var(--body);line-height:1.55}
+  .kv dd b{color:#ff8b7a;font-weight:500}
+  .kv dd .ok{color:var(--good)}
+  .findings{margin:0;padding:13px 16px 15px 34px;font-size:12.5px;color:var(--body);line-height:1.7;display:grid;gap:6px}
+  .findings li::marker{color:var(--accent);font-family:var(--mono);font-size:11px}
+  .report-note{margin:12px 0 0;font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);line-height:1.7}
 
   /* ---------- prices ---------- */
   .price-wrap{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(26px,4vw,54px);align-items:start}
@@ -226,6 +262,8 @@
   /* ---------- responsive ---------- */
   @media (max-width:980px){
     .hero-grid{grid-template-columns:1fr}
+    .logs{grid-template-columns:1fr}
+    .audit{grid-template-columns:1fr}
     .cards{grid-template-columns:1fr}
     .price-wrap{grid-template-columns:1fr}
     .cta-grid{grid-template-columns:1fr}
@@ -235,7 +273,10 @@
   }
   @media (max-width:760px){
     body{font-size:16px}
-    .topbar .tb-r span:not(.live){display:none}
+    .topbar{font-size:9.5px;letter-spacing:.1em}
+    .topbar .shell{justify-content:center}
+    .topbar .tb-r{display:none}
+    .topbar .shell > div:first-child{white-space:nowrap}
     .nav-links{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;align-items:stretch;gap:0;background:var(--bg);border-bottom:1px solid var(--line);padding:6px var(--gut) 18px}
     .nav-links.open{display:flex}
     .nav-links a{padding:14px 0;border-bottom:1px solid var(--line);font-size:16px}
@@ -251,8 +292,18 @@
     .step{border-right:0;border-bottom:1px solid var(--line)}
     .step:last-child{border-bottom:0}
     .micro{gap:12px;font-size:10px}
+    .log pre{font-size:10.5px;line-height:1.7}
   }
 </style>
+<noscript><style>
+  .reveal{opacity:1;transform:none}
+  .menu{display:none}
+  @media (max-width:760px){
+    .nav-links{display:flex;position:static;flex-direction:row;flex-wrap:wrap;align-items:center;gap:16px;background:none;border:0;padding:0}
+    .nav-links a{border:0;padding:0;font-size:14px}
+    .nav-links a.nav-cta{margin:0;padding:9px 15px}
+  }
+</style></noscript>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -274,6 +325,7 @@
     </a>
     <nav class="nav-links" id="navlinks" aria-label="Main">
       <a href="#services">Services</a>
+      <a href="#audit">Audit</a>
       <a href="#prices">Prices</a>
       <a href="#work">Proof</a>
       <a href="#process">Process</a>
@@ -369,10 +421,86 @@
     </div>
   </section>
 
+  <section class="sec" id="fix">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="eyebrow"><span>02</span>The fix, in the open</p>
+        <h2>You see the failure, the cause and the line that changed.</h2>
+        <p class="sec-sub">No mystery patches. Every job starts with a reproduced error and ends with a console that starts clean — then you run it yourself.</p>
+      </div>
+      <div class="logs">
+        <div class="log log-bad reveal">
+          <div class="log-bar"><span>console — before</span><span class="dots"><i></i><i></i><i></i></span></div>
+          <pre><span class="d">[20:41:07]</span> <span class="e">[ERROR]: Could not load 'plugins/ShopCore-2.3.jar'</span>
+org.bukkit.plugin.InvalidPluginException:
+  Unsupported API version '1.20'
+Caused by: java.lang.NoSuchMethodError:
+  'boolean org.bukkit.Material.isItem()'
+    at com.shop.ShopPlugin.onEnable(ShopPlugin.java:64)
+    at org.bukkit.plugin.java.JavaPlugin.setEnabled(...)
+<span class="d">[20:41:08]</span> <span class="e">[ERROR]: This plugin is broken.</span></pre>
+        </div>
+        <div class="log log-ok reveal">
+          <div class="log-bar"><span>console — after</span><span class="dots"><i></i><i></i><i></i></span></div>
+          <pre><span class="d">[20:44:12]</span> <span class="ok">[INFO]: Enabling ShopCore v2.3.1</span>
+<span class="d">[20:44:12]</span> <span class="ok">[INFO]: Registered 14 commands, 3 listeners</span>
+<span class="d">[20:44:12]</span> <span class="ok">[INFO]: Hooked Vault 1.7.3</span>
+<span class="d">[20:44:12]</span> <span class="ok">[INFO]: Loaded 312 items from items.yml</span>
+<span class="d">[20:44:12]</span> <span class="ok">[INFO]: Done (0.842s)! For help, type "help"</span>
+
+<span class="w">1 file changed · 2 insertions · 1 deletion</span>
+<span class="d">ShopPlugin.java — Material#isItem() → ItemStack#getType()</span></pre>
+        </div>
+      </div>
+      <p class="log-cap">Illustrative console output of a typical 1.21 API break — not a client ticket.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="audit">
+    <div class="shell audit">
+      <div>
+        <p class="eyebrow"><span>03</span>Performance audit</p>
+        <h2>Know what is actually eating ticks.</h2>
+        <p class="sec-sub">A fixed-price audit for servers that lag and owners who are tired of guessing. You send the Spark link and the plugin list; within 24 hours you get a written report you can act on yourself or hand to your host.</p>
+        <ul>
+          <li>TPS / MSPT read over a real sample window, not a snapshot</li>
+          <li>Top entity, chunk and tile-entity hotspots with coordinates</li>
+          <li>Per-plugin timing, and whether ClearLag-style plugins help or just hide</li>
+          <li>Five changes ranked by impact, with the config values</li>
+        </ul>
+        <a class="btn btn-accent" href="#contact">Book an audit — €12
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 13 13 3M6 3h7v7"/></svg>
+        </a>
+      </div>
+      <div>
+        <div class="report">
+          <div class="report-head"><span>Sample report</span><span>synthetic test server</span></div>
+          <dl class="kv">
+            <div><dt>Server</dt><dd>Paper 1.21.4 · 6 GB · 34 players</dd></div>
+            <div><dt>Window</dt><dd>10 min · 6,000 ticks</dd></div>
+            <div><dt>TPS</dt><dd><span class="ok">19.98 / 19.94 / 19.87</span> (1m/5m/15m)</dd></div>
+            <div><dt>MSPT</dt><dd>median 13.6 · p95 17.4 · <b>max 50.7</b></dd></div>
+            <div><dt>Top cost</dt><dd>entities 31% · chunks 22% · plugins 18%</dd></div>
+            <div><dt>Hotspot</dt><dd><b>chunk 14,-9 — 412 entities</b></dd></div>
+            <div><dt>Plugins</dt><dd>ClearLag 0.4% · Vault 0.2% · Shops 0.1%</dd></div>
+          </dl>
+          <ol class="findings">
+            <li>Spikes are entity pileups in one chunk, not sustained load.</li>
+            <li>24 GB heap causes GC pauses; 6–8 GB is enough here.</li>
+            <li>View-distance 12 → 8 removes ~44% of loaded chunks.</li>
+            <li>ClearLag is cosmetic at 0.4% — remove it, it hides the cause.</li>
+            <li>Pre-generate nether/end to stop chunk-gen spikes.</li>
+          </ol>
+        </div>
+        <p class="report-note">Sample made from a synthetic test server, not a client job. Your report uses your own Spark data.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="sec" id="prices">
     <div class="shell price-wrap">
       <div>
-        <p class="eyebrow"><span>02</span>Prices</p>
+        <p class="eyebrow"><span>04</span>Prices</p>
         <h2 style="font-family:var(--display);font-size:clamp(1.85rem,3.5vw,2.9rem);line-height:1.03;letter-spacing:-.04em;margin-bottom:14px">Clear starting points.</h2>
         <p class="price-note">Final price depends on scope, but it is always agreed in writing first. <b>Every job includes</b> testing before delivery, the source, a README and one revision round.</p>
         <p class="price-note">Payment after you confirm it works, or through BuiltByBit escrow. <b>Litecoin</b> for direct jobs — no PayPal or SEPA right now, and I say so before you commit.</p>
@@ -395,7 +523,7 @@
   <section class="sec" id="work">
     <div class="shell">
       <div class="sec-head">
-        <p class="eyebrow"><span>03</span>Proof</p>
+        <p class="eyebrow"><span>05</span>Proof</p>
         <h2>Three demos, built and checked.</h2>
         <p class="sec-sub">Not mockups and not client work. Each project is self-built, has source code and a check that actually ran — including what was <em>not</em> verified.</p>
       </div>
@@ -448,7 +576,7 @@
   <section class="sec" id="process">
     <div class="shell">
       <div class="sec-head">
-        <p class="eyebrow"><span>04</span>Process</p>
+        <p class="eyebrow"><span>06</span>Process</p>
         <h2>You know the price before I start.</h2>
         <p class="sec-sub">Four steps, each with an output you can check. No open-ended hourly work.</p>
       </div>
@@ -464,7 +592,7 @@
   <section class="sec" id="faq">
     <div class="shell">
       <div class="sec-head">
-        <p class="eyebrow"><span>05</span>FAQ</p>
+        <p class="eyebrow"><span>07</span>FAQ</p>
         <h2>Questions worth asking.</h2>
         <p class="sec-sub">No invented reviews, no borrowed screenshots. This is a small solo operation and the page says exactly what that means.</p>
       </div>
