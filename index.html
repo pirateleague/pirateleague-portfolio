@@ -336,16 +336,35 @@
   .disclaimer{margin:26px 0 0;font-size:11px;line-height:1.8;color:#7f7669;max-width:100ch;}
   .wordmark{font-weight:600;font-size:clamp(3.2rem,15.4vw,14rem);line-height:.72;letter-spacing:-.055em;color:transparent;-webkit-text-stroke:1px rgba(245,242,235,.22);margin:clamp(24px,4vw,40px) 0 calc(-0.16em);user-select:none;white-space:nowrap;overflow:hidden;}
 
-  /* ---------- reveal ---------- */
-  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease);transition-delay:var(--d,0ms);}
+  /* ---------- motion ---------- */
+  .reveal{opacity:0;transform:translate3d(0,var(--y,26px),0);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:var(--d,0ms);}
   .reveal.in{opacity:1;transform:none;}
+  .side h2,.fix-head h2{clip-path:inset(0 0 104% 0);transition:clip-path 1.15s var(--ease) .1s;}
+  .side.in h2,.fix-head.in h2{clip-path:inset(0 0 -.18em 0);}
+
+  h1 .line{opacity:0;transform:translateY(.55em);animation:lineUp 1.05s var(--ease) forwards;}
+  h1 .line:nth-child(2){animation-delay:.12s;}
+  h1 .line:nth-child(3){animation-delay:.24s;}
+  @keyframes lineUp{to{opacity:1;transform:none;}}
+
+  .term::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+    background:linear-gradient(180deg,transparent,rgba(245,242,235,.07) 50%,transparent);
+    transform:translateY(-115%);transition:transform 1.2s var(--ease) .1s;}
+  .term.in::after{transform:translateY(115%);}
+  .term{position:relative;}
+
+  .wordmark{will-change:transform;}
 
   @media (prefers-reduced-motion:reduce){
     html{scroll-behavior:auto;}
     .reveal{opacity:1;transform:none;transition:none;}
+    .side h2,.fix-head h2{clip-path:none;transition:none;}
+    h1 .line{opacity:1;transform:none;animation:none;}
+    .term::after{display:none;}
     .mq-track{animation:none;}
     .cur,.cur-ring{display:none;}
     .btn,.srow,.srow::before,.srow-arrow{transition:none;}
+    .wordmark{transform:none !important;}
   }
 
   /* ---------- responsive ---------- */
@@ -401,6 +420,7 @@
     .wordmark{font-size:clamp(3rem,16.5vw,6rem);}
   }
 </style>
+<noscript><style>.reveal{opacity:1!important;transform:none!important}.side h2,.fix-head h2{clip-path:none!important}h1 .line{opacity:1!important;transform:none!important;animation:none!important}.term::after{display:none!important}</style></noscript>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -487,11 +507,11 @@
         </aside>
       </div>
 
-      <div class="stats">
+      <div class="stats" data-stagger>
         <div class="stat reveal"><b>24h</b><span>Written verdict on your error</span></div>
-        <div class="stat reveal" style="--d:60ms"><b><em>$</em>25</b><span>Smallest job I take on</span></div>
-        <div class="stat reveal" style="--d:120ms"><b>0</b><span>Invoices sent before you test</span></div>
-        <div class="stat reveal" style="--d:180ms"><b>1:1</b><span>You talk to the person building it</span></div>
+        <div class="stat reveal"><b><em>$</em>25</b><span>Smallest job I take on</span></div>
+        <div class="stat reveal"><b>0</b><span>Invoices sent before you test</span></div>
+        <div class="stat reveal"><b>1:1</b><span>You talk to the person building it</span></div>
       </div>
     </div>
   </div>
@@ -514,7 +534,7 @@
         <h2>Four narrow services. Done properly.</h2>
         <p>Work that can be finished and tested in days, not months. If a request is outside what I can do well, I say so before you pay.</p>
       </div>
-      <div class="rows">
+      <div class="rows" data-stagger>
         <a class="srow reveal" href="#packages">
           <span class="i">01</span>
           <div>
@@ -564,7 +584,7 @@
         </div>
         <p>No mystery patches. Every job starts with a reproduced error and ends with a console that starts clean — then you run it yourself.</p>
       </div>
-      <div class="terms">
+      <div class="terms" data-stagger>
         <div class="term term-bad reveal">
           <div class="term-bar"><span>console — before</span><span class="dots"><i></i><i></i><i></i></span></div>
           <pre><span class="d">[20:41:07]</span> <span class="e">[ERROR]: Could not load 'plugins/ShopCore-2.3.jar'</span>
@@ -576,7 +596,7 @@ Caused by: java.lang.NoSuchMethodError:
     at org.bukkit.plugin.java.JavaPlugin.setEnabled(...)
 <span class="d">[20:41:08]</span> <span class="e">[ERROR]: This plugin is broken.</span></pre>
         </div>
-        <div class="term term-ok reveal" style="--d:80ms">
+        <div class="term term-ok reveal">
           <div class="term-bar"><span>console — after</span><span class="dots"><i></i><i></i><i></i></span></div>
           <pre><span class="d">[20:44:12]</span> <span class="ok">[INFO]: Enabling ShopCore v2.3.1</span>
 <span class="d">[20:44:12]</span> <span class="ok">[INFO]: Registered 14 commands, 3 listeners</span>
@@ -648,7 +668,7 @@ Caused by: java.lang.NoSuchMethodError:
         <h2>Three demos, built and checked.</h2>
         <p>Not mockups. Each project has source code, a README and a check that actually ran. They are self-built demos, not paid client work.</p>
       </div>
-      <div class="cases">
+      <div class="cases" data-stagger>
         <article class="case reveal">
           <div class="case-top">
             <span class="ci">01</span>
@@ -786,11 +806,11 @@ Outstanding <span class="w">90.00</span> · Unmatched <span class="w">1</span>
         <h2>You know the price before I start.</h2>
         <p>Four steps, each with an output you can check. No open-ended hourly work.</p>
       </div>
-      <div class="steps">
+      <div class="steps" data-stagger>
         <div class="step reveal"><b>01</b><h4>Send the problem</h4><p>Jar, console error, source if you have it, and your server version.</p></div>
-        <div class="step reveal" style="--d:60ms"><b>02</b><h4>Written verdict</h4><p>I confirm whether it is fixable, what caused it, the price and the date. Within 24 hours.</p></div>
-        <div class="step reveal" style="--d:120ms"><b>03</b><h4>Build &amp; test</h4><p>I patch it and test it on Paper 1.21.x before you see it.</p></div>
-        <div class="step reveal" style="--d:180ms"><b>04</b><h4>You test, then pay</h4><p>Working jar + source + README. One revision round. If it does not work, you pay nothing.</p></div>
+        <div class="step reveal"><b>02</b><h4>Written verdict</h4><p>I confirm whether it is fixable, what caused it, the price and the date. Within 24 hours.</p></div>
+        <div class="step reveal"><b>03</b><h4>Build &amp; test</h4><p>I patch it and test it on Paper 1.21.x before you see it.</p></div>
+        <div class="step reveal"><b>04</b><h4>You test, then pay</h4><p>Working jar + source + README. One revision round. If it does not work, you pay nothing.</p></div>
       </div>
     </div>
   </section>
@@ -838,7 +858,7 @@ Outstanding <span class="w">90.00</span> · Unmatched <span class="w">1</span>
         <h2>Questions worth asking.</h2>
         <p>No invented reviews, no borrowed screenshots. This is a small solo operation and the page says exactly what that means.</p>
       </div>
-      <div class="faq">
+      <div class="faq" data-stagger>
         <details class="reveal">
           <summary>Are the projects on this page client work?</summary>
           <div class="a">No. All three are self-built demos. They show how I structure, test and document code — they are not paid client projects, and there are no testimonials or client names on this page because there are none yet.</div>
@@ -935,6 +955,8 @@ Budget:</pre>
   const links = [...document.querySelectorAll('.nav-links a[href^="#"]')];
   const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
   let ticking = false;
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const wordmark = document.querySelector('.wordmark');
   const onScroll = () => {
     if (ticking) return;
     ticking = true;
@@ -946,15 +968,30 @@ Budget:</pre>
       hdr.classList.toggle('stuck', scrollY > 8);
       const max = document.documentElement.scrollHeight - innerHeight;
       document.getElementById('progress').style.width = (max > 0 ? (scrollY / max) * 100 : 0) + '%';
+
+      if (wordmark && !calm) {
+        const r = wordmark.getBoundingClientRect();
+        const p = Math.max(-1, Math.min(1, (r.top - innerHeight * 0.62) / innerHeight));
+        wordmark.style.transform = `translate3d(0,${(p * -42).toFixed(1)}px,0)`;
+      }
       ticking = false;
     });
   };
   addEventListener('scroll', onScroll, {passive: true});
   onScroll();
 
+  /* stagger children of marked groups before they are observed */
+  document.querySelectorAll('[data-stagger]').forEach(group => {
+    [...group.children].forEach((el, i) => {
+      if (el.classList.contains('reveal')) {
+        el.style.setProperty('--d', Math.min(i * 90, 450) + 'ms');
+      }
+    });
+  });
+
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, {rootMargin: '0px 0px -6% 0px', threshold: 0.06});
+  }, {rootMargin: '0px 0px -8% 0px', threshold: 0.06});
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
   document.getElementById('year').textContent = new Date().getFullYear();
