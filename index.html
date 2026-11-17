@@ -5,302 +5,423 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PirateLeague Dev — Paper plugin rescue, lag fixes, Discord bots</title>
 <meta name="description" content="Broken or outdated Paper plugins fixed at a fixed price. Lag diagnostics, Discord bots and small Python tools. Tested before delivery, source included, pay after you test.">
-<meta name="theme-color" content="#0a0c10">
+<meta name="theme-color" content="#f5f2eb">
 <meta property="og:title" content="PirateLeague Dev — Paper plugin rescue">
 <meta property="og:description" content="Fixed-price fixes for broken Paper plugins, lag and small Java/Python jobs. Source and README included. You pay after you test.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://pirateleague.github.io/pirateleague-portfolio/">
 <link rel="canonical" href="https://pirateleague.github.io/pirateleague-portfolio/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0c10'/%3E%3Cpath d='M14 46V18h13c7 0 11 4 11 10s-4 10-11 10h-6v8z' fill='%23f2b544'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2314110e'/%3E%3Cpath d='M15 47V17h13c7.4 0 11.6 4.1 11.6 10.2S35.4 37.4 28 37.4h-6.2V47z' fill='%23f5f2eb'/%3E%3Ccircle cx='46' cy='45' r='5' fill='%23d9481c'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#0a0c10;
-    --ink-2:#0f131a;
-    --panel:#121821;
-    --panel-2:#0d1219;
-    --cream:#f3eee4;
-    --body:#c9d1da;
-    --muted:#8b98a7;
-    --line:rgba(243,238,228,.12);
-    --line-strong:rgba(243,238,228,.22);
-    --gold:#f2b544;
-    --gold-soft:rgba(242,181,68,.12);
-    --green:#7ee787;
-    --red:#ff8a80;
-    --serif:"Fraunces",Georgia,"Times New Roman",serif;
-    --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --paper:#f5f2eb;
+    --paper-2:#ece7db;
+    --paper-3:#e2dccd;
+    --ink:#14110e;
+    --ink-2:#1e1a16;
+    --body:#332e28;
+    --muted:#6d6659;
+    --line:rgba(20,17,14,.16);
+    --line-soft:rgba(20,17,14,.08);
+    --accent:#d9481c;
+    --accent-soft:rgba(217,72,28,.10);
+    --green:#1b7a4b;
+    --red:#b02a1b;
+    --sans:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
     --mono:"JetBrains Mono","Cascadia Code",Consolas,monospace;
-    --r:16px;
+    --max:1280px;
+    --gut:clamp(20px,4vw,56px);
+    --ease:cubic-bezier(.2,.75,.25,1);
   }
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;scroll-padding-top:92px;}
+  html{scroll-behavior:smooth;scroll-padding-top:110px;-webkit-text-size-adjust:100%;}
   body{
-    margin:0;background:var(--ink);color:var(--cream);
-    font-family:var(--sans);font-size:17px;line-height:1.65;
+    margin:0;background:var(--paper);color:var(--body);
+    font-family:var(--sans);font-size:17px;line-height:1.6;font-weight:400;
     -webkit-font-smoothing:antialiased;overflow-x:hidden;
   }
-  body::before{
-    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-    background:
-      radial-gradient(900px 500px at 78% -8%, rgba(242,181,68,.14), transparent 62%),
-      radial-gradient(700px 420px at -6% 28%, rgba(126,231,135,.06), transparent 60%);
+  body::after{
+    content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.45;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.06'/%3E%3C/svg%3E");
   }
+  ::selection{background:var(--accent);color:#fff5ef;}
   a{color:inherit;}
-  ::selection{background:var(--gold);color:#161005;}
-  .wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 26px;position:relative;z-index:1;}
-  .mono{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;}
-  .skip{position:absolute;left:-9999px;top:0;background:var(--gold);color:#161005;padding:10px 16px;z-index:99;}
+  img{max-width:100%;}
+
+  .wrap{width:100%;max-width:var(--max);margin:0 auto;padding:0 var(--gut);position:relative;z-index:2;}
+  .mono{font-family:var(--mono);font-size:12px;letter-spacing:.05em;}
+  .skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:var(--paper);padding:12px 18px;z-index:99;font-size:14px;}
   .skip:focus{left:16px;top:12px;}
-  :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:4px;}
 
-  /* progress */
-  #progress{position:fixed;top:0;left:0;height:2px;width:0;background:var(--gold);z-index:60;transition:width .1s linear;}
+  /* ---------- chrome ---------- */
+  #progress{position:fixed;top:0;left:0;height:2px;width:0;background:var(--accent);z-index:80;}
 
-  /* nav */
-  header{position:sticky;top:0;z-index:50;background:rgba(10,12,16,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
-  .nav{display:flex;align-items:center;justify-content:space-between;min-height:74px;gap:18px;}
-  .brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
-  .brand-mark{
-    width:36px;height:36px;border-radius:10px;display:grid;place-items:center;
-    background:linear-gradient(145deg,var(--gold),#d07f18);color:#1a1205;
-    font-family:var(--serif);font-weight:700;font-size:17px;letter-spacing:-.02em;
-  }
-  .brand-txt{font-family:var(--serif);font-size:20px;line-height:1.05;letter-spacing:-.01em;}
-  .brand-txt small{display:block;font-family:var(--sans);font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+  .topbar{border-bottom:1px solid var(--line-soft);font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);}
+  .topbar .wrap{display:flex;justify-content:space-between;gap:16px;align-items:center;min-height:36px;}
+  .topbar b{color:var(--ink);font-weight:500;}
+  .topbar .tb-r{display:flex;gap:18px;align-items:center;}
+  .topbar a{text-decoration:none;}
+  .topbar a:hover{color:var(--accent);}
+  .live{display:inline-flex;align-items:center;gap:7px;color:var(--green);}
+  .live i{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(27,122,75,.14);}
+
+  header{position:sticky;top:0;z-index:60;background:rgba(245,242,235,.88);backdrop-filter:blur(16px) saturate(140%);border-bottom:1px solid transparent;transition:border-color .25s ease,background .25s ease;}
+  header.stuck{border-bottom-color:var(--line);}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:78px;}
+  .brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;letter-spacing:-.02em;}
+  .brand b{font-weight:600;font-size:19px;}
+  .brand span{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);border-left:1px solid var(--line);padding-left:10px;}
   .nav-links{display:flex;align-items:center;gap:26px;}
-  .nav-links a{text-decoration:none;color:var(--body);font-size:14px;font-weight:500;position:relative;padding:4px 0;}
-  .nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .2s;}
-  .nav-links a:hover,.nav-links a.active{color:var(--cream);}
+  .nav-links a{text-decoration:none;font-size:14.5px;font-weight:500;color:var(--body);position:relative;padding:6px 0;}
+  .nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--ease);}
   .nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1);}
-  .nav-cta{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#161005 !important;padding:11px 17px;border-radius:10px;font-weight:700;font-size:13.5px;text-decoration:none;transition:transform .16s ease,filter .16s ease;}
-  .nav-cta:hover{transform:translateY(-1px);filter:brightness(1.05);}
+  .nav-links a.active{color:var(--ink);}
+  .nav-cta{display:inline-flex;align-items:center;gap:9px;background:var(--ink);color:var(--paper) !important;padding:12px 18px;border-radius:999px;font-size:13.5px;font-weight:500;text-decoration:none;letter-spacing:0;transition:background .2s ease,transform .2s ease;}
   .nav-cta::after{display:none;}
-  .menu-btn{display:none;background:none;border:1px solid var(--line);border-radius:9px;color:var(--cream);padding:9px 11px;cursor:pointer;}
-  .menu-btn svg{display:block;}
+  .nav-cta:hover{background:var(--accent);transform:translateY(-1px);}
+  .nav-cta svg{width:13px;height:13px;}
+  .menu-btn{display:none;background:none;border:1px solid var(--line);border-radius:999px;color:var(--ink);padding:9px 12px;cursor:pointer;}
 
-  /* buttons */
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:14px 22px;border-radius:11px;text-decoration:none;font-weight:650;font-size:15px;border:1px solid transparent;position:relative;overflow:hidden;translate:var(--tx,0px) var(--ty,0px);transition:transform .16s ease,background .16s ease,border-color .16s ease,translate .18s ease;}
-  .btn:hover{transform:translateY(-1px);}
-  .btn-primary{background:var(--gold);color:#161005;}
-  .btn-primary:hover{background:#ffc55c;}
-  .btn-ghost{border-color:var(--line-strong);color:var(--cream);}
-  .btn-ghost:hover{border-color:rgba(243,238,228,.42);background:rgba(243,238,228,.03);}
-  .btn small{font-weight:500;opacity:.7;}
+  /* ---------- typography ---------- */
+  h1,h2,h3,h4{margin:0;color:var(--ink);font-weight:500;letter-spacing:-.035em;}
+  h1{font-size:clamp(3rem,8.4vw,8.1rem);line-height:.88;letter-spacing:-.05em;}
+  h2{font-size:clamp(2rem,4.4vw,3.6rem);line-height:.98;letter-spacing:-.04em;}
+  h3{font-size:1.3rem;line-height:1.2;letter-spacing:-.02em;font-weight:600;}
+  .serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.02em;}
+  .accent{color:var(--accent);}
+  .label{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;display:flex;align-items:center;gap:9px;}
+  .label::before{content:"";width:18px;height:1px;background:var(--accent);}
+  .lead{font-size:clamp(1.05rem,1.5vw,1.25rem);line-height:1.55;color:var(--body);}
+  .note{font-size:13px;color:var(--muted);line-height:1.65;}
 
-  /* ---------- pointer effects ---------- */
-  .cursor-glow,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:70;opacity:0;will-change:transform;}
-  .cursor-glow{width:460px;height:460px;margin:-230px 0 0 -230px;border-radius:50%;
-    background:radial-gradient(circle,rgba(242,181,68,.13),rgba(242,181,68,.04) 45%,transparent 70%);
-    transition:opacity .35s ease;}
-  .cursor-ring{width:32px;height:32px;margin:-16px 0 0 -16px;border:1px solid rgba(242,181,68,.5);border-radius:50%;
-    transition:width .2s ease,height .2s ease,margin .2s ease,border-color .2s ease,background .2s ease,opacity .35s ease;}
-  body.has-cursor .cursor-glow,body.has-cursor .cursor-ring{opacity:1;}
-  body.cursor-hot .cursor-ring{width:56px;height:56px;margin:-28px 0 0 -28px;border-color:rgba(242,181,68,.95);background:rgba(242,181,68,.09);}
+  /* ---------- buttons ---------- */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 22px;border-radius:999px;text-decoration:none;font-family:var(--sans);font-weight:500;font-size:15px;border:1px solid transparent;cursor:pointer;translate:var(--tx,0) var(--ty,0);transition:background .2s ease,color .2s ease,border-color .2s ease,translate .18s ease;}
+  .btn svg{width:15px;height:15px;flex:none;transition:transform .25s var(--ease);}
+  .btn:hover svg{transform:translate(2px,-2px);}
+  .btn-primary{background:var(--ink);color:var(--paper);}
+  .btn-primary:hover{background:var(--accent);}
+  .btn-accent{background:var(--accent);color:#fff2ea;}
+  .btn-accent:hover{background:#b93a12;}
+  .btn-ghost{border-color:var(--line);color:var(--ink);background:transparent;}
+  .btn-ghost:hover{border-color:var(--ink);background:rgba(20,17,14,.03);}
+  .btn-sm{padding:11px 17px;font-size:13.5px;}
+  .btn-block{width:100%;}
 
-  .card::before,.pkg::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
-    background:radial-gradient(280px circle at var(--mx,50%) var(--my,50%),rgba(242,181,68,.12),transparent 62%);
-    transition:opacity .25s ease;}
-  .card:hover::before,.pkg:hover::before{opacity:1;}
-  .card>*,.pkg>*{position:relative;z-index:1;}
-  .pkg{transform-style:preserve-3d;transition:transform .2s ease,border-color .2s ease;}
+  /* ---------- cursor ---------- */
+  .cur,.cur-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:90;opacity:0;mix-blend-mode:difference;will-change:transform;}
+  .cur{width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#fff;}
+  .cur-ring{width:34px;height:34px;margin:-17px 0 0 -17px;border:1px solid #fff;border-radius:50%;transition:width .22s ease,height .22s ease,margin .22s ease,opacity .3s ease;}
+  body.has-cursor .cur,body.has-cursor .cur-ring{opacity:.9;}
+  body.cur-hot .cur-ring{width:58px;height:58px;margin:-29px 0 0 -29px;}
+  @media (hover:none),(pointer:coarse){.cur,.cur-ring{display:none;}}
 
-  .ripple{position:absolute;border-radius:50%;background:currentColor;opacity:.22;transform:scale(0);
-    animation:ripple .62s ease-out forwards;pointer-events:none;}
-  @keyframes ripple{to{transform:scale(1);opacity:0;}}
+  /* ---------- hero ---------- */
+  .hero{padding:clamp(48px,7vw,92px) 0 0;position:relative;overflow:hidden;}
+  .hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(680px 340px at 82% 4%,var(--accent-soft),transparent 70%),
+      radial-gradient(520px 300px at 4% 40%,rgba(27,122,75,.05),transparent 70%);}
+  .hero-in{position:relative;}
+  .hero-top{display:flex;justify-content:space-between;gap:24px;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:clamp(28px,4vw,52px);}
+  .hero-top .mono{color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-size:10.5px;}
+  .hero-top .mono b{color:var(--ink);font-weight:500;}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1.32fr) minmax(300px,.68fr);gap:clamp(28px,4.5vw,64px);align-items:end;}
+  h1 .line{display:block;}
+  h1 .fix{display:inline-flex;align-items:baseline;gap:.12em;}
+  h1 .fix svg{width:.42em;height:.42em;flex:none;transform:translateY(-.02em);}
+  .hero-copy .lead{margin:clamp(22px,3vw,32px) 0 0;max-width:46ch;}
+  .hero-copy .lead strong{color:var(--ink);font-weight:600;}
+  .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px;}
+  .hero-promise{display:flex;gap:10px;align-items:flex-start;margin-top:22px;max-width:44ch;font-size:13.5px;color:var(--muted);}
+  .hero-promise svg{width:15px;height:15px;flex:none;margin-top:2px;color:var(--green);}
 
-  @media (hover:none),(pointer:coarse){.cursor-glow,.cursor-ring{display:none;}}
+  .ticket{background:var(--paper);border:1px solid var(--ink);padding:22px 22px 20px;position:relative;box-shadow:14px 14px 0 rgba(20,17,14,.06);}
+  .ticket::before,.ticket::after{content:"";position:absolute;left:0;right:0;height:6px;
+    background-image:radial-gradient(circle at 5px 3px,transparent 4px,var(--paper) 4.5px);
+    background-size:10px 6px;background-repeat:repeat-x;}
+  .ticket::before{top:-1px;}
+  .ticket::after{bottom:-1px;transform:rotate(180deg);}
+  .t-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px dashed var(--line);}
+  .t-head span:first-child{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+  .t-head span:last-child{font-family:var(--mono);font-size:10.5px;color:var(--ink);}
+  .t-rows{display:grid;gap:0;margin:6px 0 0;}
+  .t-row{display:grid;grid-template-columns:82px 1fr;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line-soft);font-size:13px;line-height:1.45;}
+  .t-row dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);padding-top:2px;}
+  .t-row dd{margin:0;color:var(--ink);}
+  .t-total{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-top:16px;}
+  .t-total span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+  .t-total b{font-size:2.4rem;line-height:1;font-weight:500;letter-spacing:-.04em;color:var(--ink);}
+  .t-total b sup{font-size:.42em;font-weight:500;top:-.9em;letter-spacing:0;margin-right:2px;color:var(--muted);}
+  .stamp{position:absolute;right:-10px;top:-14px;transform:rotate(-6deg);border:2px solid var(--accent);color:var(--accent);font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;padding:6px 9px;background:rgba(245,242,235,.85);}
+  .t-foot{margin:12px 0 0;font-size:11.5px;color:var(--muted);font-family:var(--mono);line-height:1.6;}
 
-  /* hero */
-  .hero{padding:96px 0 74px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;}
-  .hero-grid{display:grid;grid-template-columns:1.18fr .82fr;gap:56px;align-items:center;}
-  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;}
-  .eyebrow i{width:26px;height:1px;background:var(--gold);display:block;}
-  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(126,231,135,.14);display:inline-block;}
-  h1{font-family:var(--serif);font-weight:700;font-size:clamp(44px,6.4vw,82px);line-height:.99;letter-spacing:-.03em;margin:0 0 26px;max-width:13ch;}
-  h1 em{font-style:normal;color:var(--gold);}
-  .lede{max-width:54ch;color:var(--body);font-size:19px;margin:0 0 32px;}
-  .lede strong{color:var(--cream);font-weight:600;}
-  .hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
-  .hero-note{margin-top:18px;color:var(--muted);font-size:13px;display:flex;align-items:center;gap:8px;}
-  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:40px;}
-  .chip{font-family:var(--mono);font-size:11.5px;color:var(--body);border:1px solid var(--line);background:rgba(18,24,33,.7);padding:7px 11px;border-radius:999px;}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);margin-top:clamp(40px,6vw,72px);}
+  .stat{padding:26px 22px 30px;border-right:1px solid var(--line);}
+  .stat:last-child{border-right:0;}
+  .stat b{display:block;font-size:clamp(1.8rem,3.2vw,2.6rem);line-height:1;font-weight:500;letter-spacing:-.04em;color:var(--ink);margin-bottom:10px;}
+  .stat b em{font-style:normal;color:var(--accent);}
+  .stat span{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);line-height:1.5;display:block;}
 
-  /* hero card */
-  .ticket{
-    background:linear-gradient(165deg,rgba(242,181,68,.13),rgba(242,181,68,.02) 55%),var(--panel-2);
-    border:1px solid rgba(242,181,68,.26);border-radius:20px;padding:26px;
-    box-shadow:0 30px 70px -40px rgba(0,0,0,.9);
-  }
-  .ticket-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;}
-  .ticket-head span{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
-  .pill{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--green);border:1px solid rgba(126,231,135,.35);background:rgba(126,231,135,.08);padding:5px 9px;border-radius:999px;white-space:nowrap;}
-  .ticket dl{margin:0;display:grid;gap:12px;}
-  .ticket .row{display:flex;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:1px dashed var(--line);font-size:14px;}
-  .ticket .row:last-child{border-bottom:0;padding-bottom:0;}
-  .ticket dt{color:var(--muted);}
-  .ticket dd{margin:0;text-align:right;font-weight:600;}
-  .ticket .total{padding-top:4px;font-size:15px;}
-  .ticket .total dd{color:var(--gold);font-family:var(--serif);font-size:26px;line-height:1;}
-  .ticket-foot{margin-top:20px;font-size:12.5px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;}
+  /* ---------- marquee ---------- */
+  .marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;background:var(--paper-2);}
+  .mq-track{display:flex;width:max-content;animation:mq 38s linear infinite;}
+  .mq-set{display:flex;align-items:center;gap:34px;padding:15px 17px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--body);white-space:nowrap;}
+  .mq-set i{width:5px;height:5px;border-radius:50%;background:var(--accent);display:inline-block;}
+  @keyframes mq{to{transform:translateX(-50%);}}
+  .marquee:hover .mq-track{animation-play-state:paused;}
 
-  /* sections */
-  section{padding:92px 0;border-bottom:1px solid var(--line);}
-  .section-head{display:flex;justify-content:space-between;align-items:end;gap:32px;flex-wrap:wrap;margin-bottom:44px;}
-  .section-head>div{max-width:34ch;}
-  .label{font-family:var(--mono);font-size:11.5px;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;margin-bottom:14px;}
-  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4.2vw,46px);line-height:1.06;letter-spacing:-.025em;margin:0;}
-  .section-head p{max-width:48ch;color:var(--muted);margin:0;font-size:16px;}
+  /* ---------- section shell ---------- */
+  section{position:relative;}
+  .sec{padding:clamp(64px,8vw,118px) 0;border-bottom:1px solid var(--line);}
+  .split{display:grid;grid-template-columns:minmax(210px,290px) minmax(0,1fr);gap:clamp(28px,5vw,76px);align-items:start;}
+  .side{position:sticky;top:112px;}
+  .side p{color:var(--muted);font-size:14.5px;line-height:1.65;margin:18px 0 0;max-width:32ch;}
+  .split .side h2{font-size:clamp(1.75rem,2.65vw,2.5rem);line-height:1.03;letter-spacing:-.035em;}
+  .side .idx{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:14px;}
 
-  /* service cards */
-  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:28px;display:flex;flex-direction:column;gap:12px;transition:border-color .18s ease,transform .18s ease;position:relative;overflow:hidden;}
-  .card:hover{border-color:rgba(242,181,68,.4);transform:translateY(-2px);}
-  .card .num{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.12em;}
-  .card h3{margin:0;font-size:21px;letter-spacing:-.015em;font-weight:650;}
-  .card p{margin:0;color:var(--muted);font-size:15px;}
-  .card ul{margin:0;padding-left:18px;color:var(--body);font-size:14.5px;}
-  .card li{margin:4px 0;}
-  .card .foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--muted);}
-  .card .foot b{color:var(--cream);}
+  /* ---------- service rows ---------- */
+  .rows{border-top:1px solid var(--ink);}
+  .srow{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:clamp(14px,2.5vw,30px);padding:26px 18px 26px 6px;border-bottom:1px solid var(--line);text-decoration:none;position:relative;isolation:isolate;transition:color .3s var(--ease),padding .3s var(--ease);}
+  .srow::before{content:"";position:absolute;inset:0;background:var(--ink);z-index:-1;transform:scaleY(0);transform-origin:top;transition:transform .38s var(--ease);}
+  .srow:hover,.srow:focus-visible{color:var(--paper);padding-left:16px;}
+  .srow:hover::before,.srow:focus-visible::before{transform:scaleY(1);}
+  .srow .i{font-family:var(--mono);font-size:11px;color:var(--muted);padding-top:6px;letter-spacing:.08em;}
+  .srow:hover .i,.srow:focus-visible .i{color:rgba(245,242,235,.6);}
+  .srow h3{font-size:clamp(1.35rem,2.4vw,1.9rem);letter-spacing:-.03em;transition:color .3s var(--ease);}
+  .srow p{margin:8px 0 0;font-size:14.5px;color:var(--muted);max-width:52ch;transition:color .3s var(--ease);}
+  .srow:hover p,.srow:focus-visible p{color:rgba(245,242,235,.72);}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;}
+  .tags span{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;border:1px solid var(--line);padding:4px 7px;color:var(--muted);transition:border-color .3s,color .3s;}
+  .srow:hover .tags span,.srow:focus-visible .tags span{border-color:rgba(245,242,235,.28);color:rgba(245,242,235,.78);}
+  .srow-meta{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:14px;padding-top:2px;white-space:nowrap;}
+  .srow-price{font-family:var(--mono);font-size:12px;letter-spacing:.04em;}
+  .srow-days{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);transition:color .3s;}
+  .srow:hover .srow-days,.srow:focus-visible .srow-days{color:rgba(245,242,235,.6);}
+  .srow-arrow{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;transition:transform .3s var(--ease),border-color .3s,background .3s,color .3s;}
+  .srow-arrow svg{width:13px;height:13px;}
+  .srow:hover .srow-arrow,.srow:focus-visible .srow-arrow{transform:rotate(45deg);border-color:var(--accent);background:var(--accent);color:#fff;}
 
-  /* packages */
-  .packages{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;}
-  .pkg{background:var(--panel-2);border:1px solid var(--line);border-radius:18px;padding:28px 24px;display:flex;flex-direction:column;gap:14px;position:relative;}
-  .pkg.featured{border-color:rgba(242,181,68,.45);background:linear-gradient(170deg,rgba(242,181,68,.10),transparent 55%),var(--panel-2);}
-  .pkg .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
-  .pkg.featured .tag{color:var(--gold);}
-  .pkg h3{margin:0;font-size:20px;}
-  .pkg .price{font-family:var(--serif);font-size:42px;line-height:1;letter-spacing:-.03em;}
-  .pkg .price span{font-family:var(--sans);font-size:13px;color:var(--muted);letter-spacing:0;margin-left:6px;}
-  .pkg p{margin:0;color:var(--muted);font-size:14.5px;}
-  .pkg ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:14px;color:var(--body);}
-  .pkg li{display:flex;gap:9px;}
-  .pkg li::before{content:"✓";color:var(--green);font-weight:700;}
-  .pkg .btn{margin-top:auto;width:100%;font-size:14px;padding:12px 16px;}
-  .badge{position:absolute;top:-11px;right:18px;background:var(--gold);color:#161005;font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:4px 9px;border-radius:999px;}
+  /* ---------- terminals ---------- */
+  .terms{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .term{background:#17130f;border:1px solid #17130f;overflow:hidden;display:flex;flex-direction:column;min-width:0;}
+  .term-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(245,242,235,.12);font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#a2988a;}
+  .term-bar .dots{display:flex;gap:4px;}
+  .term-bar .dots i{width:6px;height:6px;border-radius:50%;background:#3a332b;}
+  .term-bad .term-bar span:last-child{color:#ff9d8a;}
+  .term-ok .term-bar span:last-child{color:#93e3ad;}
+  .term pre{margin:0;padding:16px;font-family:var(--mono);font-size:11.5px;line-height:1.85;color:#ddd3c4;white-space:pre-wrap;overflow-wrap:anywhere;flex:1;}
+  .term .e{color:#ff9d8a;}
+  .term .ok{color:#93e3ad;}
+  .term .w{color:#ffcf7a;}
+  .term .d{color:#8a7f70;}
+  .term-cap{margin:14px 0 0;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+  .fix-head{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:end;margin-bottom:26px;}
+  .fix-head p{margin:0;max-width:44ch;color:var(--muted);font-size:14.5px;}
 
-  /* proof */
-  .case{background:var(--panel-2);border:1px solid var(--line);border-radius:18px;padding:30px;margin-bottom:16px;}
-  .case-top{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:start;margin-bottom:20px;}
-  .case h3{margin:0 0 3px;font-size:24px;letter-spacing:-.02em;}
-  .case .sub{color:var(--muted);font-size:13px;margin:0;font-family:var(--mono);}
-  .status{font-family:var(--mono);font-size:11px;color:var(--green);border:1px solid rgba(126,231,135,.3);background:rgba(126,231,135,.07);padding:6px 10px;border-radius:999px;white-space:nowrap;}
-  .case-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;}
-  .case p{color:var(--body);margin:0 0 12px;font-size:15px;}
-  .case ul{margin:0;padding-left:18px;color:var(--body);font-size:14.5px;}
-  .case li{margin:5px 0;}
-  .evidence{background:#070a0e;border:1px solid var(--line);border-radius:12px;padding:16px;font-family:var(--mono);font-size:12px;line-height:1.75;color:#b9c6d3;overflow:auto;}
-  .ok{color:var(--green);}.warn{color:var(--gold);}.dim{color:#6b7a89;}.bad{color:var(--red);}
-  .case details{margin-top:16px;border-top:1px solid var(--line);padding-top:12px;}
-  .case summary{cursor:pointer;color:var(--gold);font-size:13px;font-family:var(--mono);}
-  .case table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px;}
-  .case th,.case td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);}
-  .case th{color:var(--muted);font-weight:600;}
+  /* ---------- pricing board ---------- */
+  .board{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--ink);background:var(--paper);}
+  .plan{padding:clamp(22px,2.6vw,30px);display:flex;flex-direction:column;border-right:1px solid var(--line);position:relative;}
+  .plan:last-child{border-right:0;}
+  .plan--hero{background:#14110e;color:#f5f2eb;--line:rgba(245,242,235,.18);--muted:#a9a196;--ink:#f5f2eb;}
+  .plan .p-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:24px;}
+  .plan .p-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+  .plan .p-flag{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;background:var(--accent);color:#fff4ee;padding:4px 8px;}
+  .plan .price{font-size:clamp(2.4rem,4vw,3.2rem);line-height:.95;letter-spacing:-.05em;font-weight:500;color:var(--ink);display:flex;align-items:baseline;gap:6px;}
+  .plan .price sup{font-size:.36em;letter-spacing:0;font-weight:500;color:var(--muted);top:-1.1em;}
+  .plan .price small{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:400;margin-left:2px;}
+  .plan h3{font-size:1.12rem;margin:16px 0 8px;color:var(--ink);}
+  .plan p{font-size:13.5px;color:var(--muted);margin:0 0 18px;line-height:1.6;}
+  .plan ul{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:9px;font-size:13.5px;color:var(--body);}
+  .plan--hero ul{color:rgba(245,242,235,.82);}
+  .plan li{display:flex;gap:9px;line-height:1.45;}
+  .plan li::before{content:"→";font-family:var(--mono);font-size:10px;color:var(--accent);margin-top:4px;flex:none;}
+  .plan .btn{margin-top:auto;}
 
-  /* steps */
-  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel-2);}
-  .step{padding:26px 22px;border-right:1px solid var(--line);}
-  .step:last-child{border-right:0;}
-  .step b{display:block;font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.12em;margin-bottom:12px;}
-  .step h4{margin:0 0 6px;font-size:16.5px;}
-  .step p{margin:0;color:var(--muted);font-size:13.5px;}
+  /* ---------- work ---------- */
+  .cases{display:grid;gap:0;border-top:1px solid var(--ink);}
+  .case{padding:clamp(26px,3.4vw,38px) 0;border-bottom:1px solid var(--line);}
+  .case-top{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:clamp(14px,2.4vw,28px);align-items:start;}
+  .case .ci{font-family:var(--mono);font-size:11px;color:var(--muted);padding-top:6px;}
+  .case h3{font-size:clamp(1.5rem,2.8vw,2.1rem);letter-spacing:-.035em;}
+  .case .sub{margin:7px 0 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);}
+  .chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;border:1px solid var(--green);color:var(--green);padding:5px 8px;white-space:nowrap;background:rgba(27,122,75,.05);}
+  .case-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:clamp(22px,3.4vw,40px);margin-top:26px;padding-left:calc(40px + clamp(14px,2.4vw,28px));}
+  .case-body p{margin:0 0 10px;font-size:14.5px;color:var(--body);}
+  .case-body p strong{color:var(--ink);font-weight:600;}
+  .case-body ul{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:7px;font-size:13.5px;color:var(--muted);}
+  .case-body li{display:flex;gap:9px;}
+  .case-body li::before{content:"—";color:var(--accent);flex:none;font-family:var(--mono);}
+  code{font-family:var(--mono);font-size:.88em;background:rgba(20,17,14,.06);padding:1px 5px;border-radius:3px;color:var(--ink);}
+  .det{margin-top:18px;}
+  .det summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:11px 0;border-top:1px dashed var(--line);}
+  .det summary::-webkit-details-marker{display:none;}
+  .det summary::after{content:"+";font-size:15px;color:var(--accent);line-height:1;}
+  .det[open] summary::after{content:"−";}
+  .det .det-body{padding:2px 0 8px;font-size:13.5px;color:var(--muted);max-width:78ch;line-height:1.65;}
+  .det table{width:100%;border-collapse:collapse;margin:10px 0 4px;font-size:12.5px;}
+  .det th,.det td{text-align:left;padding:8px;border-bottom:1px solid var(--line-soft);}
+  .det th{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:400;}
+  .green{color:var(--green);}
+  .red{color:var(--red);}
 
-  /* rates */
-  .rates{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:start;}
-  table.rates-table{width:100%;border-collapse:collapse;font-size:15px;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-  table.rates-table th,table.rates-table td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line);}
-  table.rates-table tr:last-child td{border-bottom:0;}
-  table.rates-table th{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:rgba(243,238,228,.02);}
-  table.rates-table td:last-child{text-align:right;font-weight:650;white-space:nowrap;}
-  table.rates-table tr:hover td{background:rgba(242,181,68,.04);}
-  .pay{background:linear-gradient(165deg,rgba(242,181,68,.09),transparent 60%),var(--panel);border:1px solid rgba(242,181,68,.24);border-radius:16px;padding:26px;}
-  .pay h3{margin:0 0 8px;font-size:19px;}
-  .pay p{color:var(--muted);font-size:14px;margin:0 0 14px;}
-  .pay ul{margin:0;padding-left:18px;color:var(--body);font-size:14px;}
-  .pay li{margin:6px 0;}
-  .pay .warnbox{margin-top:16px;padding:12px 14px;border:1px dashed var(--line-strong);border-radius:10px;font-size:12.5px;color:var(--muted);}
+  /* ---------- process ---------- */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink);}
+  .step{padding:22px 20px 26px 0;border-right:1px solid var(--line);}
+  .step:last-child{border-right:0;padding-right:0;}
+  .step b{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--accent);margin-bottom:26px;font-weight:400;}
+  .step h4{font-size:1rem;margin-bottom:8px;letter-spacing:-.01em;}
+  .step p{margin:0;font-size:13px;color:var(--muted);line-height:1.6;max-width:30ch;}
+  .step{padding-left:20px;}
+  .step:first-child{padding-left:0;}
 
-  /* faq */
-  .faq{display:grid;gap:10px;max-width:900px;}
-  .faq details{border:1px solid var(--line);border-radius:12px;background:var(--panel-2);padding:0;}
-  .faq summary{cursor:pointer;padding:18px 20px;font-weight:600;font-size:15.5px;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center;}
+  /* ---------- rates ---------- */
+  .rates{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,.75fr);gap:clamp(22px,3.6vw,44px);align-items:start;}
+  table.rate{width:100%;border-collapse:collapse;font-size:14.5px;}
+  table.rate th{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:400;text-align:left;padding:0 10px 10px 0;border-bottom:1px solid var(--ink);}
+  table.rate th:last-child{text-align:right;padding-right:0;}
+  table.rate td{padding:13px 10px 13px 0;border-bottom:1px solid var(--line-soft);color:var(--body);}
+  table.rate td:last-child{text-align:right;font-family:var(--mono);font-size:13px;color:var(--ink);padding-right:0;white-space:nowrap;}
+  table.rate tr:hover td{background:rgba(217,72,28,.035);}
+  .pay{border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--paper-2);padding:24px;}
+  .pay h3{font-size:1.05rem;margin-bottom:10px;}
+  .pay p{font-size:13px;color:var(--muted);margin:0 0 16px;line-height:1.6;}
+  .pay ul{margin:0;padding:0;list-style:none;display:grid;gap:10px;font-size:13px;color:var(--body);}
+  .pay li{position:relative;padding-left:14px;line-height:1.5;}
+  .pay li::before{content:"·";color:var(--accent);font-weight:700;position:absolute;left:0;top:0;}
+  .pay strong{color:var(--ink);}
+  .pay .warnbox{margin-top:18px;padding-top:14px;border-top:1px dashed var(--line);font-size:11.5px;color:var(--muted);line-height:1.65;}
+
+  /* ---------- faq ---------- */
+  .faq{border-top:1px solid var(--ink);}
+  .faq details{border-bottom:1px solid var(--line);}
+  .faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px;align-items:baseline;padding:19px 0;font-size:15.5px;font-weight:500;color:var(--ink);letter-spacing:-.01em;}
   .faq summary::-webkit-details-marker{display:none;}
-  .faq summary::after{content:"+";color:var(--gold);font-family:var(--mono);font-size:18px;line-height:1;}
+  .faq summary::after{content:"+";font-family:var(--mono);font-size:16px;color:var(--accent);flex:none;line-height:1;transition:transform .2s;}
   .faq details[open] summary::after{content:"−";}
-  .faq .a{padding:0 20px 18px;color:var(--muted);font-size:14.5px;}
-  .faq .a a{color:var(--gold);}
+  .faq .a{padding:0 0 20px;font-size:14px;color:var(--muted);line-height:1.7;max-width:74ch;}
+  .faq .a a{color:var(--accent);}
 
-  /* contact */
-  .contact-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:start;}
-  .contact h2{margin:0 0 12px;}
-  .contact p{color:var(--muted);margin:0 0 22px;max-width:44ch;}
-  .contact-links{display:flex;gap:10px;flex-wrap:wrap;}
-  .contact-hint{margin-top:12px;font-size:13px;color:var(--muted);max-width:46ch;}
-  .contact-hint b{color:var(--cream);font-weight:600;}
-  .brief{background:var(--panel-2);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-  .brief-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);}
-  .brief-head span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
-  .copy{background:transparent;border:1px solid var(--line-strong);color:var(--cream);border-radius:8px;padding:6px 11px;font-size:12px;cursor:pointer;font-family:var(--mono);}
-  .copy:hover{border-color:var(--gold);color:var(--gold);}
-  .brief pre{margin:0;padding:16px;font-family:var(--mono);font-size:12.5px;line-height:1.8;color:#c9d6e2;white-space:pre-wrap;}
+  /* ---------- dark close ---------- */
+  .cta{background:#14110e;color:#b9b0a3;--line:rgba(245,242,235,.16);--line-soft:rgba(245,242,235,.08);--muted:#a1998c;--body:#d7cec1;--accent:#ff6a3d;padding:clamp(60px,8vw,110px) 0 0;position:relative;overflow:hidden;}
+  .cta::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(720px 380px at 80% 0,rgba(255,106,61,.14),transparent 70%);}
+  .cta .label{color:#ff6a3d;}
+  .cta .label::before{background:#ff6a3d;}
+  .cta-h{font-size:clamp(2.9rem,9vw,8rem);line-height:.9;letter-spacing:-.05em;color:#f5f2eb;}
+  .cta-h .serif{color:#ff6a3d;}
+  .cta-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.92fr);gap:clamp(28px,5vw,70px);align-items:start;margin-top:clamp(28px,4vw,44px);}
+  .cta-grid p{color:#b9b0a3;font-size:15.5px;max-width:44ch;margin:0 0 24px;}
+  .cta-actions{display:flex;gap:10px;flex-wrap:wrap;}
+  .cta .btn-primary{background:#f5f2eb;color:#14110e;}
+  .cta .btn-primary:hover{background:#ff6a3d;color:#fff5ef;}
+  .cta .btn-ghost{border-color:rgba(245,242,235,.3);color:#f5f2eb;}
+  .cta .btn-ghost:hover{border-color:#f5f2eb;background:rgba(245,242,235,.06);}
+  .cta-note{margin:20px 0 0;font-family:var(--mono);font-size:11.5px;letter-spacing:.03em;width:auto;white-space:normal;line-height:1.85;max-width:46ch;}
+  .cta-note b{color:#f5f2eb;font-weight:500;}
+  .brief{border:1px solid rgba(245,242,235,.2);background:#1b1713;}
+  .brief-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid rgba(245,242,235,.14);}
+  .brief-head span{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#a1998c;}
+  .copy{background:transparent;border:1px solid rgba(245,242,235,.28);color:#f5f2eb;padding:5px 10px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s;}
+  .copy:hover{border-color:#ff6a3d;color:#ff6a3d;}
+  .brief pre{margin:0;padding:16px;font-family:var(--mono);font-size:12px;line-height:1.85;color:#cfc5b7;white-space:pre-wrap;}
 
-  footer{padding:40px 0 48px;color:var(--muted);font-size:13px;}
-  .foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;}
-  .foot a{color:var(--muted);text-decoration:none;}
-  .foot a:hover{color:var(--cream);}
-  .disclaimer{margin-top:20px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:#74828f;max-width:96ch;line-height:1.7;}
+  footer{background:var(--ink);color:#a1998c;padding:clamp(36px,5vw,56px) 0 24px;}
+  .foot-top{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;border-top:1px solid rgba(245,242,235,.14);padding-top:20px;}
+  .foot-top a{text-decoration:none;color:#a1998c;}
+  .foot-top a:hover{color:#f5f2eb;}
+  .disclaimer{margin:26px 0 0;font-size:11px;line-height:1.8;color:#7f7669;max-width:100ch;}
+  .wordmark{font-weight:600;font-size:clamp(3.2rem,15.4vw,14rem);line-height:.72;letter-spacing:-.055em;color:transparent;-webkit-text-stroke:1px rgba(245,242,235,.22);margin:clamp(24px,4vw,40px) 0 calc(-0.16em);user-select:none;white-space:nowrap;overflow:hidden;}
 
-  .reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease;}
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease);transition-delay:var(--d,0ms);}
   .reveal.in{opacity:1;transform:none;}
+
   @media (prefers-reduced-motion:reduce){
     html{scroll-behavior:auto;}
     .reveal{opacity:1;transform:none;transition:none;}
-    .btn,.card,.pkg,.nav-cta{transition:none;}
-    .cursor-glow,.cursor-ring{display:none;}
-    .card::before,.pkg::before{display:none;}
-    .ripple{display:none;}
+    .mq-track{animation:none;}
+    .cur,.cur-ring{display:none;}
+    .btn,.srow,.srow::before,.srow-arrow{transition:none;}
   }
 
-  @media (max-width:980px){
-    .hero-grid,.contact-grid,.rates{grid-template-columns:1fr;}
-    .ticket{max-width:520px;}
-    .cards,.packages{grid-template-columns:1fr 1fr;}
+  /* ---------- responsive ---------- */
+  @media (max-width:1080px){
+    .hero-grid{grid-template-columns:1fr;align-items:start;}
+    .ticket{max-width:460px;margin-top:8px;}
+    .board{grid-template-columns:1fr;}
+    .plan{border-right:0;border-bottom:1px solid var(--line);}
+    .plan:last-child{border-bottom:0;}
     .steps{grid-template-columns:1fr 1fr;}
-    .step:nth-child(2){border-right:0;}
-    .step:nth-child(1),.step:nth-child(2){border-bottom:1px solid var(--line);}
-    .case-grid{grid-template-columns:1fr;}
+    .step{border-bottom:1px solid var(--line);padding:22px 20px 24px 20px;}
+    .step:nth-child(2n){border-right:0;}
+    .step:nth-child(1),.step:nth-child(2){padding-top:22px;}
+    .step:nth-child(2n+1){padding-left:0;}
+    .step:nth-child(3),.step:nth-child(4){border-bottom:0;}
+    .rates{grid-template-columns:1fr;}
+    .cta-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:900px){
+    .split{grid-template-columns:1fr;gap:26px;}
+    .side{position:static;}
+    .side p{max-width:56ch;}
+    .case-body{grid-template-columns:1fr;padding-left:0;}
+    .terms{grid-template-columns:1fr;}
+    .stats{grid-template-columns:1fr 1fr;}
+    .stat:nth-child(2){border-right:0;}
+    .stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid var(--line);}
   }
   @media (max-width:760px){
-    .nav-links{position:fixed;inset:74px 0 auto 0;background:var(--ink-2);border-bottom:1px solid var(--line);flex-direction:column;align-items:stretch;padding:16px 26px 22px;gap:4px;display:none;}
+    body{font-size:16px;}
+    .topbar .tb-r span:not(.live){display:none;}
+    .nav{min-height:66px;}
+    .nav-links{position:fixed;inset:66px 0 auto 0;display:none;flex-direction:column;align-items:stretch;gap:0;background:var(--paper);border-bottom:1px solid var(--line);padding:10px var(--gut) 22px;}
     .nav-links.open{display:flex;}
-    .nav-links a{padding:11px 0;font-size:15px;border-bottom:1px solid var(--line);}
-    .nav-links a:last-child{border-bottom:0;margin-top:8px;justify-content:center;}
+    .nav-links a{padding:14px 0;border-bottom:1px solid var(--line-soft);font-size:16px;}
     .nav-links a::after{display:none;}
+    .nav-links a:last-child{border-bottom:0;margin-top:14px;display:flex;justify-content:center;}
     .menu-btn{display:inline-flex;}
-    .hero{padding:64px 0 56px;}
-    section{padding:66px 0;}
-    .cards,.packages{grid-template-columns:1fr;}
+    h1{font-size:clamp(2.7rem,11.5vw,3.6rem);}
+    .hero-top{flex-direction:column;gap:8px;align-items:flex-start;}
+    .srow{grid-template-columns:28px minmax(0,1fr);padding:22px 4px;}
+    .srow:hover,.srow:focus-visible{padding-left:10px;}
+    .srow-meta{grid-column:2;flex-direction:row;align-items:center;justify-content:space-between;margin-top:4px;}
+    .srow-arrow{display:none;}
+    .case-top{grid-template-columns:24px minmax(0,1fr);}
+    .chip{grid-column:2;justify-self:start;margin-top:10px;}
     .steps{grid-template-columns:1fr;}
-    .step{border-right:0;border-bottom:1px solid var(--line);}
+    .step{border-right:0;border-bottom:1px solid var(--line);padding:20px 0 22px;}
     .step:last-child{border-bottom:0;}
-    .section-head{margin-bottom:32px;}
+    .stat{padding:20px 14px 22px;}
+    .stat:first-child{padding-left:0;}
+    .foot-top{flex-direction:column;gap:12px;}
+    .wordmark{font-size:clamp(3rem,16.5vw,6rem);}
   }
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <div id="progress" aria-hidden="true"></div>
-<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
-<div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+<div class="cur" id="cur" aria-hidden="true"></div>
+<div class="cur-ring" id="curRing" aria-hidden="true"></div>
 
-<header>
+<div class="topbar">
+  <div class="wrap">
+    <div><span class="live"><i aria-hidden="true"></i> Taking small jobs</span> <span aria-hidden="true">&nbsp;·&nbsp;</span> <b>Netherlands</b> · CET</div>
+    <div class="tb-r">
+      <span>Written verdict &lt; 24 h</span>
+      <a href="#contact">Discord 33slaxt</a>
+    </div>
+  </div>
+</div>
+
+<header id="hdr">
   <div class="wrap nav">
     <a class="brand" href="#top" aria-label="PirateLeague Dev, home">
-      <span class="brand-mark" aria-hidden="true">PL</span>
-      <span class="brand-txt">PirateLeague<small>Small software, fixed scope</small></span>
+      <b>PirateLeague</b><span>Dev</span>
     </a>
     <nav class="nav-links" id="navlinks" aria-label="Main">
       <a href="#services">Services</a>
@@ -309,404 +430,468 @@
       <a href="#process">Process</a>
       <a href="#rates">Rates</a>
       <a href="#faq">FAQ</a>
-      <a class="nav-cta" href="#contact">Start a job →</a>
+      <a class="nav-cta" href="#contact">Start a job
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 13 13 3M6 3h7v7"/></svg>
+      </a>
     </nav>
     <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlinks" aria-label="Open menu">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
   </div>
 </header>
 
 <main id="main">
-<div class="hero" id="top">
-  <div class="wrap hero-grid">
-    <div>
-      <div class="eyebrow"><span class="dot" aria-hidden="true"></span> Taking small jobs · CET · reply within 24h</div>
-      <h1>Your plugin broke. I ship it <em>fixed.</em></h1>
-      <p class="lede">Paper plugins, lag diagnostics, Discord bots and small Java or Python tools. <strong>Fixed price agreed up front, tested before delivery, source code included</strong> — and you pay only after you have tested it.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#packages">See fixed prices</a>
-        <a class="btn btn-ghost" href="#work">Check the proof first</a>
+  <div class="hero" id="top">
+    <div class="wrap hero-in">
+      <div class="hero-top">
+        <span class="mono"><b>Paper plugin rescue</b> — fixed scope, fixed price</span>
+        <span class="mono">Est. 2026 · solo, no agency</span>
       </div>
-      <p class="hero-note"><span class="dot" aria-hidden="true"></span> If I can't fix it, you pay nothing — and you get a written reason why.</p>
-      <div class="chips" aria-label="Technologies">
-        <span class="chip">Paper 1.21.x</span>
-        <span class="chip">Java 21</span>
-        <span class="chip">discord.js 14</span>
-        <span class="chip">Python 3.14</span>
-        <span class="chip">LTC / escrow</span>
+
+      <div class="hero-grid">
+        <div class="hero-copy reveal">
+          <h1>
+            <span class="line">Your plugin</span>
+            <span class="line">broke. I ship</span>
+            <span class="line"><span class="fix">it <span class="serif accent">fixed.</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="accent" aria-hidden="true"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+            </span></span>
+          </h1>
+          <p class="lead">Paper plugins, lag diagnostics, Discord bots and small Java or Python tools. <strong>Price agreed up front, tested before delivery, source included</strong> — and you pay only after you have tested it.</p>
+          <div class="hero-actions">
+            <a class="btn btn-accent magnet" href="#packages">See fixed prices
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 13 13 3M6 3h7v7"/></svg>
+            </a>
+            <a class="btn btn-ghost magnet" href="#work">Check the proof</a>
+          </div>
+          <p class="hero-promise">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m4 10 4 4 8-9"/></svg>
+            If I can't fix it, you pay nothing — and you get a written reason why.
+          </p>
+        </div>
+
+        <aside class="ticket reveal" style="--d:120ms" aria-label="Example work order">
+          <span class="stamp">Pay after test</span>
+          <div class="t-head"><span>Work order</span><span>№ 0042</span></div>
+          <dl class="t-rows">
+            <div class="t-row"><dt>Issue</dt><dd>Plugin won't load after the 1.21 update</dd></div>
+            <div class="t-row"><dt>Cause</dt><dd>Removed Bukkit API call in the startup path</dd></div>
+            <div class="t-row"><dt>Scope</dt><dd>Patch, then test on Paper 1.21.x</dd></div>
+            <div class="t-row"><dt>Delivered</dt><dd>Jar + source + README + one revision</dd></div>
+          </dl>
+          <div class="t-total">
+            <span>Fixed total<br>after you test</span>
+            <b><sup>$</sup>85</b>
+          </div>
+          <p class="t-foot">Scope confirmed in writing before I start. No hourly billing, no surprise invoice.</p>
+        </aside>
+      </div>
+
+      <div class="stats">
+        <div class="stat reveal"><b>24h</b><span>Written verdict on your error</span></div>
+        <div class="stat reveal" style="--d:60ms"><b><em>$</em>25</b><span>Smallest job I take on</span></div>
+        <div class="stat reveal" style="--d:120ms"><b>0</b><span>Invoices sent before you test</span></div>
+        <div class="stat reveal" style="--d:180ms"><b>1:1</b><span>You talk to the person building it</span></div>
       </div>
     </div>
-
-    <aside class="ticket" aria-label="Example job quote">
-      <div class="ticket-head">
-        <span>Example quote</span>
-        <span class="pill">FIXED PRICE</span>
-      </div>
-      <dl>
-        <div class="row"><dt>Plugin won't load after 1.21 update</dt><dd>Rescue Fix</dd></div>
-        <div class="row"><dt>Console error + broken command</dt><dd>included</dd></div>
-        <div class="row"><dt>Tested on Paper 1.21.x</dt><dd>included</dd></div>
-        <div class="row"><dt>Source + README</dt><dd>included</dd></div>
-        <div class="row"><dt>One revision round</dt><dd>included</dd></div>
-        <div class="row total"><dt>You pay after testing</dt><dd>$85</dd></div>
-      </dl>
-      <p class="ticket-foot"><span aria-hidden="true">↳</span> Scope confirmed in writing before I start. No hourly billing, no surprise invoice.</p>
-    </aside>
   </div>
-</div>
 
-<section id="services">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div>
-        <div class="label">01 — What I do</div>
+  <div class="marquee" aria-hidden="true">
+    <div class="mq-track">
+      <div class="mq-set">
+        <span>Paper 1.21.x</span><i></i><span>Java 21</span><i></i><span>discord.js 14</span><i></i><span>Python 3.14</span><i></i><span>Spark profiles</span><i></i><span>LTC + escrow</span><i></i><span>Source included</span><i></i><span>Pay after test</span><i></i>
+      </div>
+      <div class="mq-set">
+        <span>Paper 1.21.x</span><i></i><span>Java 21</span><i></i><span>discord.js 14</span><i></i><span>Python 3.14</span><i></i><span>Spark profiles</span><i></i><span>LTC + escrow</span><i></i><span>Source included</span><i></i><span>Pay after test</span><i></i>
+      </div>
+    </div>
+  </div>
+
+  <section class="sec" id="services">
+    <div class="wrap split">
+      <div class="side reveal">
+        <span class="idx">01 / Services</span>
         <h2>Four narrow services. Done properly.</h2>
+        <p>Work that can be finished and tested in days, not months. If a request is outside what I can do well, I say so before you pay.</p>
       </div>
-      <p>I take work that can be finished and tested in days, not months. If a request is outside what I can do well, I say so before you pay.</p>
+      <div class="rows">
+        <a class="srow reveal" href="#packages">
+          <span class="i">01</span>
+          <div>
+            <h3>Paper plugin rescue</h3>
+            <p>A plugin that broke after an update, lost its author, or no longer compiles on 1.21.x.</p>
+            <div class="tags"><span>Reproduce</span><span>Patch</span><span>1.8–1.20 → 1.21.x</span><span>Tested jar</span></div>
+          </div>
+          <div class="srow-meta"><span class="srow-price">from $25</span><span class="srow-days">1–5 days</span><span class="srow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 13 13 3M6 3h7v7"/></svg></span></div>
+        </a>
+        <a class="srow reveal" href="#packages">
+          <span class="i">02</span>
+          <div>
+            <h3>Lag diagnosis &amp; fix</h3>
+            <p>TPS drops, tick spikes, entity or chunk load. Measure first, then change one thing at a time.</p>
+            <div class="tags"><span>Spark profile</span><span>Top tick costs</span><span>Re-profile as proof</span></div>
+          </div>
+          <div class="srow-meta"><span class="srow-price">from $35</span><span class="srow-days">1–3 days</span><span class="srow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 13 13 3M6 3h7v7"/></svg></span></div>
+        </a>
+        <a class="srow reveal" href="#packages">
+          <span class="i">03</span>
+          <div>
+            <h3>Discord bots that handle support</h3>
+            <p>Tickets, applications, onboarding and staff workflows — not another generic economy bot.</p>
+            <div class="tags"><span>Private tickets</span><span>Slash commands</span><span>SQLite</span><span>API hooks</span></div>
+          </div>
+          <div class="srow-meta"><span class="srow-price">from $90</span><span class="srow-days">2–4 days</span><span class="srow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 13 13 3M6 3h7v7"/></svg></span></div>
+        </a>
+        <a class="srow reveal" href="#packages">
+          <span class="i">04</span>
+          <div>
+            <h3>Python &amp; Java automation</h3>
+            <p>One repetitive task turned into a small tool you can run yourself, with the code and instructions.</p>
+            <div class="tags"><span>CSV / Excel</span><span>Scheduled jobs</span><span>Internal CLI</span></div>
+          </div>
+          <div class="srow-meta"><span class="srow-price">from $75</span><span class="srow-days">1–5 days</span><span class="srow-arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 13 13 3M6 3h7v7"/></svg></span></div>
+        </a>
+      </div>
     </div>
-    <div class="cards">
-      <article class="card reveal">
-        <div class="num">A — MINECRAFT</div>
-        <h3>Paper plugin rescue</h3>
-        <p>A plugin that broke after an update, lost its author, or no longer compiles on 1.21.x.</p>
-        <ul>
-          <li>Reproduce the error, patch the cause</li>
-          <li>Version migration 1.8–1.20 → 1.21.x</li>
-          <li>Tested jar + source + short README</li>
-        </ul>
-        <div class="foot"><span>From <b>$25</b></span><span>1–5 days</span></div>
-      </article>
-      <article class="card reveal">
-        <div class="num">B — PERFORMANCE</div>
-        <h3>Lag diagnosis &amp; fix</h3>
-        <p>TPS drops, tick spikes, entity or chunk load. Measure first, then change one thing at a time.</p>
-        <ul>
-          <li>Spark profile read and explained</li>
-          <li>Top tick costs with exact config changes</li>
-          <li>Re-profile after the fix as proof</li>
-        </ul>
-        <div class="foot"><span>From <b>$35</b></span><span>1–3 days</span></div>
-      </article>
-      <article class="card reveal">
-        <div class="num">C — DISCORD</div>
-        <h3>Bots that handle support</h3>
-        <p>Tickets, applications, onboarding and staff workflows — not another generic economy bot.</p>
-        <ul>
-          <li>Private ticket channels and permissions</li>
-          <li>Slash commands, buttons, SQLite storage</li>
-          <li>Small API integrations</li>
-        </ul>
-        <div class="foot"><span>From <b>$90</b></span><span>2–4 days</span></div>
-      </article>
-      <article class="card reveal">
-        <div class="num">D — SOFTWARE</div>
-        <h3>Python &amp; Java automation</h3>
-        <p>One repetitive task turned into a small tool you can run yourself, with the code and instructions.</p>
-        <ul>
-          <li>CSV / Excel cleaning and reconciliation</li>
-          <li>Scheduled jobs and API calls</li>
-          <li>Internal CLI tools, no cloud required</li>
-        </ul>
-        <div class="foot"><span>From <b>$75</b></span><span>1–5 days</span></div>
-      </article>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section id="packages">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div>
-        <div class="label">02 — Rescue packages</div>
+  <section class="sec" id="fix">
+    <div class="wrap">
+      <div class="fix-head reveal">
+        <div>
+          <div class="label">The fix, in the open</div>
+          <h2>You see the failure, the cause<br>and the line that changed.</h2>
+        </div>
+        <p>No mystery patches. Every job starts with a reproduced error and ends with a console that starts clean — then you run it yourself.</p>
+      </div>
+      <div class="terms">
+        <div class="term term-bad reveal">
+          <div class="term-bar"><span>console — before</span><span class="dots"><i></i><i></i><i></i></span></div>
+          <pre><span class="d">[20:41:07]</span> <span class="e">[ERROR]: Could not load 'plugins/ShopCore-2.3.jar'</span>
+org.bukkit.plugin.InvalidPluginException:
+  Unsupported API version '1.20'
+Caused by: java.lang.NoSuchMethodError:
+  'boolean org.bukkit.Material.isItem()'
+    at com.shop.ShopPlugin.onEnable(ShopPlugin.java:64)
+    at org.bukkit.plugin.java.JavaPlugin.setEnabled(...)
+<span class="d">[20:41:08]</span> <span class="e">[ERROR]: This plugin is broken.</span></pre>
+        </div>
+        <div class="term term-ok reveal" style="--d:80ms">
+          <div class="term-bar"><span>console — after</span><span class="dots"><i></i><i></i><i></i></span></div>
+          <pre><span class="d">[20:44:12]</span> <span class="ok">[INFO]: Enabling ShopCore v2.3.1</span>
+<span class="d">[20:44:12]</span> <span class="ok">[INFO]: Registered 14 commands, 3 listeners</span>
+<span class="d">[20:44:12]</span> <span class="ok">[INFO]: Hooked Vault 1.7.3</span>
+<span class="d">[20:44:12]</span> <span class="ok">[INFO]: Loaded 312 items from items.yml</span>
+<span class="d">[20:44:12]</span> <span class="ok">[INFO]: Done (0.842s)! For help, type "help"</span>
+
+<span class="w">1 file changed · 2 insertions · 1 deletion</span>
+<span class="d">ShopPlugin.java — Material#isItem() → ItemStack#getType()</span></pre>
+        </div>
+      </div>
+      <p class="term-cap reveal">Illustrative console output of a typical 1.21 API break — not a client ticket.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="packages">
+    <div class="wrap split">
+      <div class="side reveal">
+        <span class="idx">02 / Rescue packages</span>
         <h2>Pick the size. The price doesn't move.</h2>
+        <p>Every package includes testing before delivery, the source code, a README and one revision round. Payment after you confirm it works.</p>
       </div>
-      <p>Every package includes testing before delivery, the source code, a README and one revision round. Payment after you confirm it works.</p>
+      <div class="board reveal">
+        <article class="plan">
+          <div class="p-top"><span class="p-tag">Triage</span><span class="p-tag">01</span></div>
+          <div class="price"><sup>$</sup>35<small>credited</small></div>
+          <h3>Find out what's wrong</h3>
+          <p>Send the jar, the console error and — if you have it — the source. You get a verdict, the cause and a fixed quote.</p>
+          <ul>
+            <li>Answer within 24 hours</li>
+            <li>Written cause, not a guess</li>
+            <li>Full $35 off the fix</li>
+          </ul>
+          <a class="btn btn-ghost btn-block" href="#contact">Start with triage</a>
+        </article>
+        <article class="plan plan--hero">
+          <div class="p-top"><span class="p-tag">Rescue fix</span><span class="p-flag">Most jobs</span></div>
+          <div class="price"><sup>$</sup>85<small>fixed</small></div>
+          <h3>Make it work again</h3>
+          <p>I reproduce the failure, patch it and test it on Paper 1.21.x. You get a working jar plus the code.</p>
+          <ul>
+            <li>Jar + source + README</li>
+            <li>Tested before delivery</li>
+            <li>One revision included</li>
+            <li>No fix, no invoice</li>
+          </ul>
+          <a class="btn btn-accent btn-block" href="#contact">Send your error</a>
+        </article>
+        <article class="plan">
+          <div class="p-top"><span class="p-tag">Migration</span><span class="p-tag">03</span></div>
+          <div class="price"><sup>$</sup>120<small>fixed</small></div>
+          <h3>Move it to 1.21.x</h3>
+          <p>An old plugin that still runs on 1.8–1.20 and needs to work on a current Paper build.</p>
+          <ul>
+            <li>Dependency and API updates</li>
+            <li>Behaviour checked against the old version</li>
+            <li>Or a written "this cannot be ported"</li>
+          </ul>
+          <a class="btn btn-ghost btn-block" href="#contact">Check compatibility</a>
+        </article>
+      </div>
     </div>
-    <div class="packages">
-      <article class="pkg reveal">
-        <div class="tag">Triage</div>
-        <h3>Find out what's wrong</h3>
-        <div class="price">$35 <span>credited if you continue</span></div>
-        <p>Send the jar, the console error and (if you have it) the source. You get a verdict, the cause and a fixed quote.</p>
-        <ul>
-          <li>Answer within 24 hours</li>
-          <li>Written cause, not a guess</li>
-          <li>Full $35 off the fix</li>
-        </ul>
-        <a class="btn btn-ghost" href="#contact">Start with triage</a>
-      </article>
-      <article class="pkg featured reveal">
-        <span class="badge">MOST JOBS</span>
-        <div class="tag">Rescue fix</div>
-        <h3>Make it work again</h3>
-        <div class="price">$85 <span>fixed</span></div>
-        <p>I reproduce the failure, patch it and test it on Paper 1.21.x. You get a working jar plus the code.</p>
-        <ul>
-          <li>Jar + source + README</li>
-          <li>Tested before delivery</li>
-          <li>One revision included</li>
-          <li>No fix, no invoice</li>
-        </ul>
-        <a class="btn btn-primary" href="#contact">Send your error</a>
-      </article>
-      <article class="pkg reveal">
-        <div class="tag">Migration</div>
-        <h3>Move it to 1.21.x</h3>
-        <div class="price">$120 <span>fixed</span></div>
-        <p>An old plugin that still runs on 1.8–1.20 and needs to work on a current Paper build.</p>
-        <ul>
-          <li>Dependency and API updates</li>
-          <li>Behaviour checked against the old version</li>
-          <li>Or a written "this cannot be ported"</li>
-        </ul>
-        <a class="btn btn-ghost" href="#contact">Check compatibility</a>
-      </article>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section id="work">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div>
-        <div class="label">03 — Proof</div>
+  <section class="sec" id="work">
+    <div class="wrap split">
+      <div class="side reveal">
+        <span class="idx">03 / Proof</span>
         <h2>Three demos, built and checked.</h2>
+        <p>Not mockups. Each project has source code, a README and a check that actually ran. They are self-built demos, not paid client work.</p>
       </div>
-      <p>Not mockups. Each project has source code, a README and a check that actually ran. They are self-built demos, not paid client work.</p>
+      <div class="cases">
+        <article class="case reveal">
+          <div class="case-top">
+            <span class="ci">01</span>
+            <div>
+              <h3>LagAudit</h3>
+              <p class="sub">Paper plugin · Java 21 · measure before optimizing</p>
+            </div>
+            <span class="chip">Compiles · 9,325 B</span>
+          </div>
+          <div class="case-body">
+            <div>
+              <p><strong>The problem.</strong> "The server lags" usually ends in random optimization before anyone knows whether the cause is entities, chunks, tile entities, a plugin or the host.</p>
+              <p><strong>What it does.</strong> <code>/lagaudit scan</code> samples TPS, counts loaded chunks, entities and tile entities, ranks the 15 heaviest chunks and writes a timestamped report. <code>/lagaudit top</code> gives the short version in-game.</p>
+              <ul>
+                <li>Read-only: it changes nothing in the world</li>
+                <li>Report to <code>plugins/LagAudit/reports/</code></li>
+                <li>Paper 1.21.4 API, no database</li>
+              </ul>
+            </div>
+            <div class="term">
+              <div class="term-bar"><span>build</span><span class="dots"><i></i><i></i><i></i></span></div>
+              <pre><span class="d">$</span> mvn -q -DskipTests package
+<span class="ok">maven_exit=0</span>
+target/LagAudit-1.0.0.jar
+<span class="d">9,325 bytes</span>
+
+<span class="d"># expected format, not a live run</span>
+/lagaudit scan
+<span class="ok">Scan finished in &lt;ms&gt;.</span>
+Report: plugins/LagAudit/reports/report-&lt;timestamp&gt;.txt
+TPS &lt;1m&gt;, &lt;chunks&gt; chunks, &lt;entities&gt; entities.</pre>
+            </div>
+          </div>
+          <details class="det">
+            <summary>What is verified, and what is not</summary>
+            <div class="det-body">Verified: the project compiles against the Paper API and produces a loadable jar. Not verified: behaviour on a live Paper server, because no server was available while building it. The plugin is deliberately read-only.</div>
+          </details>
+        </article>
+
+        <article class="case reveal">
+          <div class="case-top">
+            <span class="ci">02</span>
+            <div>
+              <h3>TicketDesk</h3>
+              <p class="sub">Discord bot · discord.js 14 · SQLite</p>
+            </div>
+            <span class="chip">4 / 4 tests pass</span>
+          </div>
+          <div class="case-body">
+            <div>
+              <p><strong>The problem.</strong> Support requests disappear in DMs and general chat. Staff cannot see who owns a case, who else is allowed in, or what was already tried.</p>
+              <p><strong>What it does.</strong> A panel button opens a private channel; the owner and staff can talk, add another person, and close with a reason. Every ticket is stored in SQLite with number, owner and status.</p>
+              <ul>
+                <li><code>/ticket setup</code>, <code>/ticket add</code>, <code>/ticket close</code></li>
+                <li>Owner or Manage Server only</li>
+                <li>One open ticket per user, sequential numbers</li>
+              </ul>
+            </div>
+            <div class="term">
+              <div class="term-bar"><span>test</span><span class="dots"><i></i><i></i><i></i></span></div>
+              <pre><span class="d">$</span> npm test
+<span class="ok">✔ channel names are stable, numbered and safe</span>
+<span class="ok">✔ owner and staff can manage, strangers cannot</span>
+<span class="ok">✔ close reasons are trimmed and capped</span>
+<span class="ok">✔ store creates sequential tickets and closes them once</span>
+
+tests 4 · pass 4 · fail 0
+<span class="d">discord.js 14.28.1 · Node 24</span></pre>
+            </div>
+          </div>
+          <details class="det">
+            <summary>What is verified, and what is not</summary>
+            <div class="det-body">Verified: command handlers parse, the core store and permission rules are tested, and the bot exits with a clear message when no token is configured. Not verified: a live login to Discord, because no bot token was provided.</div>
+          </details>
+        </article>
+
+        <article class="case reveal">
+          <div class="case-top">
+            <span class="ci">03</span>
+            <div>
+              <h3>Invoice Reconciler</h3>
+              <p class="sub">Python CLI · standard library · CSV in, Markdown out</p>
+            </div>
+            <span class="chip">10 / 10 tests pass</span>
+          </div>
+          <div class="case-body">
+            <div>
+              <p><strong>The problem.</strong> A small business exports bank lines and invoices, then checks them by hand. Underpayments, duplicate payments and unknown deposits are easy to miss.</p>
+              <p><strong>What it does.</strong> Matches transactions on payment reference, with an amount/date/customer fallback. Flags paid, open, missing, underpaid, overpaid and duplicate invoices, plus unmatched bank lines.</p>
+              <ul>
+                <li>One command, no cloud or subscription</li>
+                <li>Markdown report, non-zero exit code on exceptions</li>
+                <li>Works on a normal CSV export</li>
+              </ul>
+            </div>
+            <div class="term">
+              <div class="term-bar"><span>run</span><span class="dots"><i></i><i></i><i></i></span></div>
+              <pre><span class="d">$</span> python -m unittest -v
+<span class="ok">Ran 10 tests in 0.001s — OK</span>
+
+<span class="d">$</span> python reconciler.py --bank sample/bank.csv \
+  --invoices sample/invoices.csv --today 2026-11-01
+
+Invoiced <span class="w">5,470.00</span> · Received <span class="w">5,730.00</span>
+Outstanding <span class="w">90.00</span> · Unmatched <span class="w">1</span>
+<span class="e">INV-1003 UNDERPAID — 90.00 short</span>
+<span class="e">INV-1005 DUPLICATE — 350.00 over</span></pre>
+            </div>
+          </div>
+          <details class="det">
+            <summary>Open the sample report</summary>
+            <div class="det-body">
+              <table>
+                <thead><tr><th>Invoice</th><th>Customer</th><th>Amount</th><th>Paid</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td>INV-1001</td><td>Acme BV</td><td>1,250.00</td><td>1,250.00</td><td class="green">PAID</td></tr>
+                  <tr><td>INV-1002</td><td>Blue Oak</td><td>480.00</td><td>480.00</td><td class="green">PAID</td></tr>
+                  <tr><td>INV-1003</td><td>Cedar Works</td><td>990.00</td><td>900.00</td><td class="red">UNDERPAID</td></tr>
+                  <tr><td>INV-1004</td><td>Delta Labs</td><td>2,400.00</td><td>2,400.00</td><td class="green">PAID (2 terms)</td></tr>
+                  <tr><td>INV-1005</td><td>Echo Studio</td><td>350.00</td><td>700.00</td><td class="red">DUPLICATE</td></tr>
+                </tbody>
+              </table>
+              <p style="margin:10px 0 0">Unmatched: 2026-10-27, "Unknown deposit", 75.00.</p>
+            </div>
+          </details>
+        </article>
+      </div>
     </div>
+  </section>
 
-    <article class="case reveal">
-      <div class="case-top">
-        <div>
-          <h3>LagAudit</h3>
-          <p class="sub">Paper plugin · Java 21 · measure before optimizing</p>
-        </div>
-        <span class="status">COMPILES · JAR 9,325 BYTES</span>
+  <section class="sec" id="process">
+    <div class="wrap split">
+      <div class="side reveal">
+        <span class="idx">04 / Process</span>
+        <h2>You know the price before I start.</h2>
+        <p>Four steps, each with an output you can check. No open-ended hourly work.</p>
       </div>
-      <div class="case-grid">
-        <div>
-          <p><strong>The problem.</strong> "The server lags" usually ends in random optimization before anyone knows whether the cause is entities, chunks, tile entities, a plugin or the host.</p>
-          <p><strong>What it does.</strong> <code>/lagaudit scan</code> samples TPS, counts loaded chunks, entities and tile entities, ranks the 15 heaviest chunks and writes a timestamped report. <code>/lagaudit top</code> gives the short version in-game.</p>
-          <ul>
-            <li>Read-only: it changes nothing in the world</li>
-            <li>Report to <code>plugins/LagAudit/reports/</code></li>
-            <li>Paper 1.21.4 API, no database</li>
-          </ul>
-        </div>
-        <div class="evidence">
-<span class="dim">$</span> mvn -q -DskipTests package<br>
-<span class="ok">maven_exit=0</span><br>
-target/LagAudit-1.0.0.jar<br>
-<span class="dim">9,325 bytes</span><br><br>
-<span class="dim"># expected format, not a live run</span><br>
-/lagaudit scan<br>
-<span class="ok">Scan finished in &lt;ms&gt;.</span><br>
-Report: plugins/LagAudit/reports/report-&lt;timestamp&gt;.txt<br>
-TPS &lt;1m&gt;, &lt;chunks&gt; chunks, &lt;entities&gt; entities.
-        </div>
+      <div class="steps">
+        <div class="step reveal"><b>01</b><h4>Send the problem</h4><p>Jar, console error, source if you have it, and your server version.</p></div>
+        <div class="step reveal" style="--d:60ms"><b>02</b><h4>Written verdict</h4><p>I confirm whether it is fixable, what caused it, the price and the date. Within 24 hours.</p></div>
+        <div class="step reveal" style="--d:120ms"><b>03</b><h4>Build &amp; test</h4><p>I patch it and test it on Paper 1.21.x before you see it.</p></div>
+        <div class="step reveal" style="--d:180ms"><b>04</b><h4>You test, then pay</h4><p>Working jar + source + README. One revision round. If it does not work, you pay nothing.</p></div>
       </div>
-      <details>
-        <summary>What is verified, and what is not</summary>
-        <p style="margin-top:10px">Verified: the project compiles against the Paper API and produces a loadable jar. Not verified: behaviour on a live Paper server, because no server was available while building it. The plugin is deliberately read-only.</p>
-      </details>
-    </article>
+    </div>
+  </section>
 
-    <article class="case reveal">
-      <div class="case-top">
-        <div>
-          <h3>TicketDesk</h3>
-          <p class="sub">Discord bot · discord.js 14 · SQLite</p>
-        </div>
-        <span class="status">4 / 4 TESTS PASS</span>
+  <section class="sec" id="rates">
+    <div class="wrap split">
+      <div class="side reveal">
+        <span class="idx">05 / Rates</span>
+        <h2>Clear starting points.</h2>
+        <p>Final price depends on scope, but it is always agreed in writing first. Larger or unclear work gets a quote, not an hourly meter.</p>
       </div>
-      <div class="case-grid">
-        <div>
-          <p><strong>The problem.</strong> Support requests disappear in DMs and general chat. Staff cannot see who owns a case, who else is allowed in, or what was already tried.</p>
-          <p><strong>What it does.</strong> A panel button opens a private channel; the owner and staff can talk, add another person, and close with a reason. Every ticket is stored in SQLite with number, owner and status.</p>
-          <ul>
-            <li><code>/ticket setup</code>, <code>/ticket add</code>, <code>/ticket close</code></li>
-            <li>Owner or Manage Server only</li>
-            <li>One open ticket per user, sequential numbers</li>
-          </ul>
-        </div>
-        <div class="evidence">
-<span class="dim">$</span> npm test<br>
-<span class="ok">✔ channel names are stable, numbered and safe</span><br>
-<span class="ok">✔ owner and staff can manage, strangers cannot</span><br>
-<span class="ok">✔ close reasons are trimmed and capped</span><br>
-<span class="ok">✔ store creates sequential tickets and closes them once</span><br><br>
-tests 4 · pass 4 · fail 0<br>
-<span class="dim">discord.js 14.28.1 · Node 24</span>
-        </div>
-      </div>
-      <details>
-        <summary>What is verified, and what is not</summary>
-        <p style="margin-top:10px">Verified: command handlers parse, the core store and permission rules are tested, and the bot exits with a clear message when no token is configured. Not verified: a live login to Discord, because no bot token was provided.</p>
-      </details>
-    </article>
-
-    <article class="case reveal">
-      <div class="case-top">
-        <div>
-          <h3>Invoice Reconciler</h3>
-          <p class="sub">Python CLI · standard library · CSV in, Markdown out</p>
-        </div>
-        <span class="status">10 / 10 TESTS PASS</span>
-      </div>
-      <div class="case-grid">
-        <div>
-          <p><strong>The problem.</strong> A small business exports bank lines and invoices, then checks them by hand. Underpayments, duplicate payments and unknown deposits are easy to miss.</p>
-          <p><strong>What it does.</strong> Matches transactions on payment reference, with an amount/date/customer fallback. Flags paid, open, missing, underpaid, overpaid and duplicate invoices, plus unmatched bank lines.</p>
-          <ul>
-            <li>One command, no cloud or subscription</li>
-            <li>Markdown report, non-zero exit code on exceptions</li>
-            <li>Works on a normal CSV export</li>
-          </ul>
-        </div>
-        <div class="evidence">
-<span class="dim">$</span> python -m unittest -v<br>
-<span class="ok">Ran 10 tests in 0.001s — OK</span><br><br>
-<span class="dim">$</span> python reconciler.py --bank sample/bank.csv \<br>
-&nbsp;&nbsp;--invoices sample/invoices.csv --today 2026-11-01<br><br>
-Invoiced <span class="warn">5,470.00</span> · Received <span class="warn">5,730.00</span><br>
-Outstanding <span class="warn">90.00</span> · Unmatched <span class="warn">1</span><br>
-<span class="bad">INV-1003 UNDERPAID — 90.00 short</span><br>
-<span class="bad">INV-1005 DUPLICATE — 350.00 over</span>
-        </div>
-      </div>
-      <details>
-        <summary>Open the sample report</summary>
-        <table>
-          <thead><tr><th>Invoice</th><th>Customer</th><th>Amount</th><th>Paid</th><th>Status</th></tr></thead>
+      <div class="rates">
+        <table class="rate reveal">
+          <thead><tr><th>Work</th><th>Price</th></tr></thead>
           <tbody>
-            <tr><td>INV-1001</td><td>Acme BV</td><td>1,250.00</td><td>1,250.00</td><td class="ok">PAID</td></tr>
-            <tr><td>INV-1002</td><td>Blue Oak</td><td>480.00</td><td>480.00</td><td class="ok">PAID</td></tr>
-            <tr><td>INV-1003</td><td>Cedar Works</td><td>990.00</td><td>900.00</td><td class="bad">UNDERPAID</td></tr>
-            <tr><td>INV-1004</td><td>Delta Labs</td><td>2,400.00</td><td>2,400.00</td><td class="ok">PAID (2 terms)</td></tr>
-            <tr><td>INV-1005</td><td>Echo Studio</td><td>350.00</td><td>700.00</td><td class="bad">DUPLICATE</td></tr>
+            <tr><td>Small patch — one isolated fix</td><td>$25</td></tr>
+            <tr><td>Triage with written cause (credited to the fix)</td><td>$35</td></tr>
+            <tr><td>Rescue fix, tested jar + source</td><td>$85</td></tr>
+            <tr><td>Version migration to 1.21.x</td><td>$120</td></tr>
+            <tr><td>Self-contained module or larger plugin</td><td>from $120</td></tr>
+            <tr><td>Discord ticket / moderation bot</td><td>from $90</td></tr>
+            <tr><td>Python or Java automation</td><td>from $75</td></tr>
+            <tr><td>Hourly, only for unclear scope</td><td>$25/h</td></tr>
+            <tr><td>Maintenance, 4 hours per month</td><td>from $150</td></tr>
           </tbody>
         </table>
-        <p style="margin-top:10px">Unmatched: 2026-10-27, "Unknown deposit", 75.00.</p>
-      </details>
-    </article>
-  </div>
-</section>
-
-<section id="process">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div>
-        <div class="label">04 — Process</div>
-        <h2>You know the price before I start.</h2>
+        <aside class="pay reveal" style="--d:80ms">
+          <h3>Payment</h3>
+          <p>Agreed before work starts. Nothing is marked as received until it is confirmed on-chain or by the escrow.</p>
+          <ul>
+            <li><strong>Litecoin (LTC)</strong> — address shared after the scope is agreed</li>
+            <li><strong>BuiltByBit escrow / middleman</strong> — welcome</li>
+            <li><strong>Pay after you test</strong> — standard on rescue work</li>
+          </ul>
+          <div class="warnbox">PayPal and SEPA are not available right now. If that is a hard requirement, say so in your first message and I will tell you honestly whether the job can go ahead.</div>
+        </aside>
       </div>
-      <p>Four steps, each with an output you can check. No open-ended hourly work.</p>
     </div>
-    <div class="steps reveal">
-      <div class="step"><b>01</b><h4>Send the problem</h4><p>Jar, console error, source if you have it, and your server version.</p></div>
-      <div class="step"><b>02</b><h4>Written verdict</h4><p>I confirm whether it is fixable, what caused it, the price and the date. Within 24 hours.</p></div>
-      <div class="step"><b>03</b><h4>Build &amp; test</h4><p>I patch it and test it on Paper 1.21.x before you see it.</p></div>
-      <div class="step"><b>04</b><h4>You test, then pay</h4><p>Working jar + source + README. One revision round. If it does not work, you pay nothing.</p></div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section id="rates">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div>
-        <div class="label">05 — Rates</div>
-        <h2>Clear starting points.</h2>
-      </div>
-      <p>Final price depends on scope, but it is always agreed in writing first. Larger or unclear work gets a quote, not an hourly meter.</p>
-    </div>
-    <div class="rates">
-      <table class="rates-table reveal">
-        <thead><tr><th>Work</th><th>Price</th></tr></thead>
-        <tbody>
-          <tr><td>Small patch — one isolated fix</td><td>$25</td></tr>
-          <tr><td>Triage with written cause (credited to the fix)</td><td>$35</td></tr>
-          <tr><td>Rescue fix, tested jar + source</td><td>$85</td></tr>
-          <tr><td>Version migration to 1.21.x</td><td>$120</td></tr>
-          <tr><td>Self-contained module or larger plugin</td><td>from $120</td></tr>
-          <tr><td>Discord ticket / moderation bot</td><td>from $90</td></tr>
-          <tr><td>Python or Java automation</td><td>from $75</td></tr>
-          <tr><td>Hourly, only for unclear scope</td><td>$25/h</td></tr>
-          <tr><td>Maintenance, 4 hours per month</td><td>from $150</td></tr>
-        </tbody>
-      </table>
-      <aside class="pay reveal">
-        <h3>Payment</h3>
-        <p>Agreed before work starts. Nothing is marked as received until it is confirmed on-chain or by the escrow.</p>
-        <ul>
-          <li><strong>Litecoin (LTC)</strong> — address shared after the scope is agreed</li>
-          <li><strong>BuiltByBit escrow / middleman</strong> — welcome</li>
-          <li><strong>Pay after you test</strong> — standard on rescue work</li>
-        </ul>
-        <div class="warnbox">PayPal and SEPA are not available right now. If that is a hard requirement, say so in your first message and I will tell you honestly whether the job can go ahead.</div>
-      </aside>
-    </div>
-  </div>
-</section>
-
-<section id="faq">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div>
-        <div class="label">06 — Straight answers</div>
+  <section class="sec" id="faq">
+    <div class="wrap split">
+      <div class="side reveal">
+        <span class="idx">06 / Straight answers</span>
         <h2>Questions worth asking.</h2>
+        <p>No invented reviews, no borrowed screenshots. This is a small solo operation and the page says exactly what that means.</p>
       </div>
-      <p>No invented reviews, no borrowed screenshots. This is a small solo operation and the page says exactly what that means.</p>
+      <div class="faq">
+        <details class="reveal">
+          <summary>Are the projects on this page client work?</summary>
+          <div class="a">No. All three are self-built demos. They show how I structure, test and document code — they are not paid client projects, and there are no testimonials or client names on this page because there are none yet.</div>
+        </details>
+        <details class="reveal">
+          <summary>What if you can't fix my plugin?</summary>
+          <div class="a">Then you pay nothing for the fix. You still get a short written explanation of what is wrong and why it cannot be repaired within the agreed scope, so you can take it to another developer or replace the plugin.</div>
+        </details>
+        <details class="reveal">
+          <summary>Do you need my source code?</summary>
+          <div class="a">For a code fix, yes — a jar alone cannot be patched properly. For configuration or lag work I need the config, the spark report and the plugin list. If you only have the jar, I will tell you upfront what is and is not possible.</div>
+        </details>
+        <details class="reveal">
+          <summary>Which versions do you work with?</summary>
+          <div class="a">Paper 1.21.x is the main target, with Spigot and Purpur close behind. Older plugins can be migrated from 1.8–1.20, but I confirm feasibility before quoting. Bedrock/Geyser setups are fine as long as the plugin itself is Java-side.</div>
+        </details>
+        <details class="reveal">
+          <summary>Do I get the source code?</summary>
+          <div class="a">Yes. Every delivery includes the source, a README with build and install steps, and the tested jar. You own the delivered code for your server; I do not resell it.</div>
+        </details>
+        <details class="reveal">
+          <summary>Why are the prices lower than an agency?</summary>
+          <div class="a">Because this is one developer with no sales team, no account manager and no office. You get a fixed quote, direct replies and tested work — not a discovery call. If a job is worth more than the listed price, I will say so before starting.</div>
+        </details>
+      </div>
     </div>
-    <div class="faq">
-      <details class="reveal">
-        <summary>Are the projects on this page client work?</summary>
-        <div class="a">No. All three are self-built demos. They show how I structure, test and document code — they are not paid client projects, and there are no testimonials or client names on this page because there are none yet.</div>
-      </details>
-      <details class="reveal">
-        <summary>What if you can't fix my plugin?</summary>
-        <div class="a">Then you pay nothing for the fix. You still get a short written explanation of what is wrong and why it cannot be repaired within the agreed scope, so you can take it to another developer or replace the plugin.</div>
-      </details>
-      <details class="reveal">
-        <summary>Do you need my source code?</summary>
-        <div class="a">For a code fix, yes — a jar alone cannot be patched properly. For configuration or lag work I need the config, the spark report and the plugin list. If you only have the jar, I will tell you upfront what is and is not possible.</div>
-      </details>
-      <details class="reveal">
-        <summary>Which versions do you work with?</summary>
-        <div class="a">Paper 1.21.x is the main target, with Spigot and Purpur close behind. Older plugins can be migrated from 1.8–1.20, but I confirm feasibility before quoting. Bedrock/Geyser setups are fine as long as the plugin itself is Java-side.</div>
-      </details>
-      <details class="reveal">
-        <summary>Do I get the source code?</summary>
-        <div class="a">Yes. Every delivery includes the source, a README with build and install steps, and the tested jar. You own the delivered code for your server; I do not resell it.</div>
-      </details>
-      <details class="reveal">
-        <summary>Why are the prices lower than an agency?</summary>
-        <div class="a">Because this is one developer with no sales team, no account manager and no office. You get a fixed quote, direct replies and tested work — not a discovery call. If a job is worth more than the listed price, I will say so before starting.</div>
-      </details>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section id="contact">
-  <div class="wrap contact-grid">
-    <div class="contact reveal">
-      <div class="label">07 — Contact</div>
-      <h2>Send the error, not a greeting.</h2>
-      <p>Include the server version, what broke and when, plus your deadline. You get a scope and a fixed price — or a clear no.</p>
-      <div class="contact-links">
-        <a class="btn btn-primary" href="https://builtbybit.com/members/pirateleague.998043/" rel="noopener">Message me on BuiltByBit</a>
-        <button class="btn btn-ghost" id="discordBtn" type="button" data-user="33slaxt" aria-label="Copy Discord username 33slaxt">Discord — 33slaxt</button>
-        <a class="btn btn-ghost" href="https://old.reddit.com/user/pirateleage" rel="noopener">Reddit — u/pirateleage</a>
-      </div>
-      <p class="contact-hint">DM me on Discord at <b>33slaxt</b> — click the button to copy the username. Send your server version, the plugin and the error in the first message.</p>
-      <p style="margin-top:16px;font-size:13px">Prefer the marketplace? My live BuiltByBit offer: <a href="https://builtbybit.com/threads/lagaudit-custom-paper-work-%E2%80%94-diagnostics-fixes-small-features-ltc-escrow.744997/" rel="noopener" style="color:var(--gold)">LagAudit &amp; custom Paper work</a>.</p>
-    </div>
-    <div class="brief reveal">
-      <div class="brief-head">
-        <span>Copy this brief</span>
-        <button class="copy" id="copyBtn" type="button">Copy</button>
-      </div>
-      <pre id="briefText">Hi — I need help with a Paper plugin.
+  <section class="cta" id="contact">
+    <div class="wrap">
+      <div class="label reveal">07 / Contact</div>
+      <h2 class="cta-h reveal">Send the <span class="serif">error.</span></h2>
+      <div class="cta-grid">
+        <div class="reveal">
+          <p style="margin-top:22px">Include the server version, what broke and when, plus your deadline. You get a scope and a fixed price — or a clear no.</p>
+          <div class="cta-actions">
+            <button class="btn btn-primary magnet" id="discordBtn" type="button" data-user="33slaxt" aria-label="Copy Discord username 33slaxt">Discord — 33slaxt
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5" y="5" width="8" height="8" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>
+            </button>
+            <a class="btn btn-ghost magnet" href="https://builtbybit.com/members/pirateleague.998043/" rel="noopener">BuiltByBit
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 13 13 3M6 3h7v7"/></svg>
+            </a>
+            <a class="btn btn-ghost magnet" href="https://old.reddit.com/user/pirateleage" rel="noopener">Reddit</a>
+          </div>
+          <p class="cta-note">DM <b>33slaxt</b> on Discord — the button copies the username. First message: server version, plugin, error.</p>
+          <p class="cta-note">Prefer the marketplace? <a href="https://builtbybit.com/threads/lagaudit-custom-paper-work-%E2%80%94-diagnostics-fixes-small-features-ltc-escrow.744997/" rel="noopener" style="color:#f5f2eb;text-decoration:underline;text-underline-offset:3px">Live BuiltByBit offer — LagAudit &amp; custom Paper work</a>.</p>
+        </div>
+        <div class="brief reveal" style="--d:100ms">
+          <div class="brief-head">
+            <span>Copy this brief</span>
+            <button class="copy" id="copyBtn" type="button">Copy</button>
+          </div>
+          <pre id="briefText">Hi — I need help with a Paper plugin.
 
 Server: Paper 1.21.x
 Plugin + version:
@@ -715,28 +900,28 @@ When it started:
 Source available: yes / no
 Deadline:
 Budget:</pre>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
-</main>
 
-<footer>
-  <div class="wrap">
-    <div class="foot">
-      <div>© <span id="year">2026</span> PirateLeague Dev · Netherlands · CET</div>
-      <div><a href="#top">Back to top</a> · Discord: <span class="mono">33slaxt</span> · Paper · Python · Java</div>
-    </div>
-    <div class="disclaimer">
-      LagAudit, TicketDesk and Invoice Reconciler are self-built demo projects, not paid client work. No testimonials, client names or reviews are invented.
-      LagAudit compiles against the Paper API but was not run on a live server; TicketDesk's core is tested but was not connected to Discord without a token; Invoice Reconciler was run end-to-end on the included sample data.
-      Prices are starting points and are confirmed in writing per job.
-    </div>
-  </div>
-</footer>
+    <footer>
+      <div class="wrap">
+        <div class="foot-top">
+          <div>© <span id="year">2026</span> PirateLeague Dev — Netherlands, CET</div>
+          <div><a href="#top">Back to top</a> &nbsp;·&nbsp; <a href="https://builtbybit.com/members/pirateleague.998043/" rel="noopener">BuiltByBit</a> &nbsp;·&nbsp; <a href="https://old.reddit.com/user/pirateleage" rel="noopener">Reddit</a> &nbsp;·&nbsp; Discord 33slaxt</div>
+        </div>
+        <div class="wordmark" aria-hidden="true">PIRATELEAGUE</div>
+        <p class="disclaimer">LagAudit, TicketDesk and Invoice Reconciler are self-built demo projects, not paid client work. No testimonials, client names or reviews are invented. LagAudit compiles against the Paper API but was not run on a live server; TicketDesk's core is tested but was not connected to Discord without a token; Invoice Reconciler was run end-to-end on the included sample data. Prices are starting points and are confirmed in writing per job.</p>
+      </div>
+    </footer>
+  </section>
+</main>
 
 <script>
   const nav = document.getElementById('navlinks');
   const menuBtn = document.getElementById('menuBtn');
+  const hdr = document.getElementById('hdr');
+
   menuBtn.addEventListener('click', () => {
     const open = nav.classList.toggle('open');
     menuBtn.setAttribute('aria-expanded', String(open));
@@ -749,128 +934,107 @@ Budget:</pre>
 
   const links = [...document.querySelectorAll('.nav-links a[href^="#"]')];
   const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  let ticking = false;
   const onScroll = () => {
-    const y = window.scrollY + 120;
-    let current = sections[0];
-    for (const s of sections) if (s.offsetTop <= y) current = s;
-    links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current.id));
-
-    const max = document.documentElement.scrollHeight - innerHeight;
-    document.getElementById('progress').style.width = (max > 0 ? (scrollY / max) * 100 : 0) + '%';
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = scrollY + 140;
+      let current = sections[0];
+      for (const s of sections) if (s.offsetTop <= y) current = s;
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current.id));
+      hdr.classList.toggle('stuck', scrollY > 8);
+      const max = document.documentElement.scrollHeight - innerHeight;
+      document.getElementById('progress').style.width = (max > 0 ? (scrollY / max) * 100 : 0) + '%';
+      ticking = false;
+    });
   };
   addEventListener('scroll', onScroll, {passive: true});
   onScroll();
 
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, {rootMargin: '0px 0px -8% 0px', threshold: 0.08});
+  }, {rootMargin: '0px 0px -6% 0px', threshold: 0.06});
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  /* ---------- pointer effects ---------- */
+  /* ---------- cursor: dot + lagging ring, blend-mode difference ---------- */
   const fine = matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion:reduce)').matches;
   if (fine) {
     document.body.classList.add('has-cursor');
-    const glow = document.getElementById('cursorGlow');
-    const ring = document.getElementById('cursorRing');
+    const dot = document.getElementById('cur');
+    const ring = document.getElementById('curRing');
     let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my;
 
     addEventListener('pointermove', e => {
       mx = e.clientX; my = e.clientY;
-      glow.style.transform = `translate(${mx}px,${my}px)`;
+      dot.style.transform = `translate(${mx}px,${my}px)`;
     }, {passive: true});
 
-    const trail = () => {
-      rx += (mx - rx) * 0.16;
-      ry += (my - ry) * 0.16;
+    (function trail() {
+      rx += (mx - rx) * 0.18;
+      ry += (my - ry) * 0.18;
       ring.style.transform = `translate(${rx}px,${ry}px)`;
       requestAnimationFrame(trail);
-    };
-    trail();
+    })();
 
-    const hot = 'a,button,summary,.card,.pkg,.chip,pre,input';
+    const hot = 'a,button,summary,.srow,.plan,.ticket,pre';
     addEventListener('pointerover', e => {
-      if (e.target.closest(hot)) document.body.classList.add('cursor-hot');
+      if (e.target.closest(hot)) document.body.classList.add('cur-hot');
     });
     addEventListener('pointerout', e => {
       const t = e.target.closest(hot);
-      if (t && !t.contains(e.relatedTarget)) document.body.classList.remove('cursor-hot');
+      if (t && !t.contains(e.relatedTarget)) document.body.classList.remove('cur-hot');
     });
+  }
 
-    document.querySelectorAll('.card,.pkg').forEach(el => {
+  /* ---------- magnetic buttons ---------- */
+  const magnetic = matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if (magnetic) {
+    document.querySelectorAll('.magnet').forEach(el => {
       el.addEventListener('pointermove', e => {
         const r = el.getBoundingClientRect();
-        const x = e.clientX - r.left, y = e.clientY - r.top;
-        el.style.setProperty('--mx', x + 'px');
-        el.style.setProperty('--my', y + 'px');
-        if (el.classList.contains('pkg')) {
-          const dx = x / r.width - 0.5, dy = y / r.height - 0.5;
-          el.style.transform = `perspective(900px) rotateX(${(-dy * 3).toFixed(2)}deg) rotateY(${(dx * 3).toFixed(2)}deg) translateY(-2px)`;
-        }
-      });
-      el.addEventListener('pointerleave', () => {
-        el.style.removeProperty('--mx');
-        el.style.removeProperty('--my');
-        el.style.transform = '';
-      });
-    });
-
-    document.querySelectorAll('.btn').forEach(b => {
-      b.addEventListener('pointermove', e => {
-        const r = b.getBoundingClientRect();
         const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
         const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
-        b.style.setProperty('--tx', (dx * 5).toFixed(2) + 'px');
-        b.style.setProperty('--ty', (dy * 4).toFixed(2) + 'px');
+        el.style.setProperty('--tx', (dx * 5).toFixed(2) + 'px');
+        el.style.setProperty('--ty', (dy * 4).toFixed(2) + 'px');
       });
-      b.addEventListener('pointerleave', () => {
-        b.style.setProperty('--tx', '0px');
-        b.style.setProperty('--ty', '0px');
-      });
-      b.addEventListener('pointerdown', e => {
-        const r = b.getBoundingClientRect();
-        const d = Math.max(r.width, r.height) * 1.7;
-        const s = document.createElement('span');
-        s.className = 'ripple';
-        s.style.width = s.style.height = d + 'px';
-        s.style.left = (e.clientX - r.left - d / 2) + 'px';
-        s.style.top = (e.clientY - r.top - d / 2) + 'px';
-        b.appendChild(s);
-        setTimeout(() => s.remove(), 650);
+      el.addEventListener('pointerleave', () => {
+        el.style.setProperty('--tx', '0px');
+        el.style.setProperty('--ty', '0px');
       });
     });
   }
 
+  /* ---------- copy: discord username ---------- */
   const discordBtn = document.getElementById('discordBtn');
-  if (discordBtn) {
-    discordBtn.addEventListener('click', async () => {
-      const user = discordBtn.dataset.user;
-      const old = discordBtn.textContent;
-      try {
-        await navigator.clipboard.writeText(user);
-        discordBtn.textContent = 'Copied — ' + user;
-      } catch {
-        discordBtn.textContent = 'Discord: ' + user;
-      }
-      setTimeout(() => { discordBtn.textContent = old; }, 1800);
-    });
-  }
+  const discordLabel = discordBtn.innerHTML;
+  discordBtn.addEventListener('click', async () => {
+    const user = discordBtn.dataset.user;
+    try {
+      await navigator.clipboard.writeText(user);
+      discordBtn.textContent = 'Copied — ' + user;
+    } catch {
+      discordBtn.textContent = 'Discord: ' + user;
+    }
+    setTimeout(() => { discordBtn.innerHTML = discordLabel; }, 2000);
+  });
 
+  /* ---------- copy: brief ---------- */
   const copyBtn = document.getElementById('copyBtn');
   copyBtn.addEventListener('click', async () => {
     const text = document.getElementById('briefText').textContent;
     try {
       await navigator.clipboard.writeText(text);
       copyBtn.textContent = 'Copied';
-      setTimeout(() => copyBtn.textContent = 'Copy', 1600);
     } catch {
       const r = document.createRange();
       r.selectNodeContents(document.getElementById('briefText'));
       const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
       copyBtn.textContent = 'Selected';
-      setTimeout(() => copyBtn.textContent = 'Copy', 1600);
     }
+    setTimeout(() => copyBtn.textContent = 'Copy', 1600);
   });
 </script>
 </body>
