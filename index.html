@@ -3,248 +3,408 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PirateLeague Dev — Paper plugins, Discord bots, small software</title>
-<meta name="description" content="Fixed-scope Paper plugins, Discord bots and Python automations. Working demos, clear prices, delivery in days.">
+<title>PirateLeague Dev — Paper plugin rescue, lag fixes, Discord bots</title>
+<meta name="description" content="Broken or outdated Paper plugins fixed at a fixed price. Lag diagnostics, Discord bots and small Python tools. Tested before delivery, source included, pay after you test.">
+<meta name="theme-color" content="#0a0c10">
+<meta property="og:title" content="PirateLeague Dev — Paper plugin rescue">
+<meta property="og:description" content="Fixed-price fixes for broken Paper plugins, lag and small Java/Python jobs. Source and README included. You pay after you test.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pirateleague.github.io/pirateleague-portfolio/">
+<link rel="canonical" href="https://pirateleague.github.io/pirateleague-portfolio/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0c10'/%3E%3Cpath d='M14 46V18h13c7 0 11 4 11 10s-4 10-11 10h-6v8z' fill='%23f2b544'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0b0f14;
-    --panel:#111821;
-    --panel-2:#0e141c;
-    --line:rgba(226,232,240,.12);
-    --text:#e6edf3;
-    --muted:#93a1b1;
-    --accent:#f0b429;
-    --accent-2:#7ee787;
-    --mono:"Cascadia Code","SFMono-Regular",Consolas,"Liberation Mono",monospace;
-    --sans:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    --ink:#0a0c10;
+    --ink-2:#0f131a;
+    --panel:#121821;
+    --panel-2:#0d1219;
+    --cream:#f3eee4;
+    --body:#c9d1da;
+    --muted:#8b98a7;
+    --line:rgba(243,238,228,.12);
+    --line-strong:rgba(243,238,228,.22);
+    --gold:#f2b544;
+    --gold-soft:rgba(242,181,68,.12);
+    --green:#7ee787;
+    --red:#ff8a80;
+    --serif:"Fraunces",Georgia,"Times New Roman",serif;
+    --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:"JetBrains Mono","Cascadia Code",Consolas,monospace;
+    --r:16px;
   }
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth;scroll-padding-top:92px;}
   body{
-    margin:0;background:var(--bg);color:var(--text);
-    font-family:var(--sans);font-size:17px;line-height:1.6;
-    -webkit-font-smoothing:antialiased;
+    margin:0;background:var(--ink);color:var(--cream);
+    font-family:var(--sans);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(900px 500px at 78% -8%, rgba(242,181,68,.14), transparent 62%),
+      radial-gradient(700px 420px at -6% 28%, rgba(126,231,135,.06), transparent 60%);
   }
   a{color:inherit;}
-  .wrap{width:100%;max-width:1160px;margin:0 auto;padding:0 26px;}
-  .mono{font-family:var(--mono);font-size:13px;letter-spacing:.02em;}
+  ::selection{background:var(--gold);color:#161005;}
+  .wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 26px;position:relative;z-index:1;}
+  .mono{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;}
+  .skip{position:absolute;left:-9999px;top:0;background:var(--gold);color:#161005;padding:10px 16px;z-index:99;}
+  .skip:focus{left:16px;top:12px;}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px;}
 
-  header{
-    position:sticky;top:0;z-index:20;
-    background:rgba(11,15,20,.86);backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);
-  }
-  .nav{display:flex;align-items:center;justify-content:space-between;min-height:70px;gap:18px;}
-  .brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:-.01em;}
+  /* progress */
+  #progress{position:fixed;top:0;left:0;height:2px;width:0;background:var(--gold);z-index:60;transition:width .1s linear;}
+
+  /* nav */
+  header{position:sticky;top:0;z-index:50;background:rgba(10,12,16,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
+  .nav{display:flex;align-items:center;justify-content:space-between;min-height:74px;gap:18px;}
+  .brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
   .brand-mark{
-    width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
-    background:linear-gradient(135deg,var(--accent),#e07a1f);color:#1a1205;font-weight:800;font-size:15px;
+    width:36px;height:36px;border-radius:10px;display:grid;place-items:center;
+    background:linear-gradient(145deg,var(--gold),#d07f18);color:#1a1205;
+    font-family:var(--serif);font-weight:700;font-size:17px;letter-spacing:-.02em;
   }
-  .brand small{display:block;color:var(--muted);font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase;}
-  .nav-links{display:flex;gap:26px;align-items:center;}
-  .nav-links a{text-decoration:none;color:var(--muted);font-size:14px;}
-  .nav-links a:hover{color:var(--text);}
-  .btn{
-    display:inline-block;padding:12px 19px;border-radius:9px;text-decoration:none;
-    font-weight:650;font-size:14px;border:1px solid transparent;
-    transition:transform .15s ease, background .15s ease, border-color .15s ease;
-  }
+  .brand-txt{font-family:var(--serif);font-size:20px;line-height:1.05;letter-spacing:-.01em;}
+  .brand-txt small{display:block;font-family:var(--sans);font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+  .nav-links{display:flex;align-items:center;gap:26px;}
+  .nav-links a{text-decoration:none;color:var(--body);font-size:14px;font-weight:500;position:relative;padding:4px 0;}
+  .nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .2s;}
+  .nav-links a:hover,.nav-links a.active{color:var(--cream);}
+  .nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1);}
+  .nav-cta{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#161005 !important;padding:11px 17px;border-radius:10px;font-weight:700;font-size:13.5px;text-decoration:none;transition:transform .16s ease,filter .16s ease;}
+  .nav-cta:hover{transform:translateY(-1px);filter:brightness(1.05);}
+  .nav-cta::after{display:none;}
+  .menu-btn{display:none;background:none;border:1px solid var(--line);border-radius:9px;color:var(--cream);padding:9px 11px;cursor:pointer;}
+  .menu-btn svg{display:block;}
+
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:14px 22px;border-radius:11px;text-decoration:none;font-weight:650;font-size:15px;border:1px solid transparent;position:relative;overflow:hidden;translate:var(--tx,0px) var(--ty,0px);transition:transform .16s ease,background .16s ease,border-color .16s ease,translate .18s ease;}
   .btn:hover{transform:translateY(-1px);}
-  .btn-primary{background:var(--accent);color:#1a1205;}
-  .btn-ghost{border-color:var(--line);color:var(--text);}
-  .btn-ghost:hover{border-color:rgba(226,232,240,.34);}
+  .btn-primary{background:var(--gold);color:#161005;}
+  .btn-primary:hover{background:#ffc55c;}
+  .btn-ghost{border-color:var(--line-strong);color:var(--cream);}
+  .btn-ghost:hover{border-color:rgba(243,238,228,.42);background:rgba(243,238,228,.03);}
+  .btn small{font-weight:500;opacity:.7;}
 
-  .hero{padding:92px 0 72px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;}
-  .hero::after{
-    content:"";position:absolute;right:-160px;top:-140px;width:620px;height:620px;
-    background:radial-gradient(circle,rgba(240,180,41,.16),transparent 65%);pointer-events:none;
-  }
-  .kicker{color:var(--accent);font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:22px;}
-  h1{
-    font-size:clamp(42px,6.6vw,78px);line-height:1.02;letter-spacing:-.035em;
-    margin:0 0 24px;max-width:17ch;font-weight:800;
-  }
-  h1 span{color:var(--accent);}
-  .lede{max-width:58ch;color:#c3ceda;font-size:19px;margin:0 0 32px;}
-  .hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
-  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:44px;}
-  .chip{
-    font-family:var(--mono);font-size:12px;color:#c3ceda;
-    border:1px solid var(--line);background:var(--panel-2);
-    padding:7px 11px;border-radius:999px;
-  }
+  /* ---------- pointer effects ---------- */
+  .cursor-glow,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:70;opacity:0;will-change:transform;}
+  .cursor-glow{width:460px;height:460px;margin:-230px 0 0 -230px;border-radius:50%;
+    background:radial-gradient(circle,rgba(242,181,68,.13),rgba(242,181,68,.04) 45%,transparent 70%);
+    transition:opacity .35s ease;}
+  .cursor-ring{width:32px;height:32px;margin:-16px 0 0 -16px;border:1px solid rgba(242,181,68,.5);border-radius:50%;
+    transition:width .2s ease,height .2s ease,margin .2s ease,border-color .2s ease,background .2s ease,opacity .35s ease;}
+  body.has-cursor .cursor-glow,body.has-cursor .cursor-ring{opacity:1;}
+  body.cursor-hot .cursor-ring{width:56px;height:56px;margin:-28px 0 0 -28px;border-color:rgba(242,181,68,.95);background:rgba(242,181,68,.09);}
 
-  section{padding:88px 0;border-bottom:1px solid var(--line);}
-  .section-head{display:flex;justify-content:space-between;gap:28px;align-items:end;margin-bottom:38px;flex-wrap:wrap;}
-  .section-head h2{font-size:clamp(28px,4vw,42px);line-height:1.12;letter-spacing:-.025em;margin:0;font-weight:760;}
-  .section-head p{max-width:52ch;color:var(--muted);margin:0;font-size:16px;}
-  .label{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;}
+  .card::before,.pkg::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
+    background:radial-gradient(280px circle at var(--mx,50%) var(--my,50%),rgba(242,181,68,.12),transparent 62%);
+    transition:opacity .25s ease;}
+  .card:hover::before,.pkg:hover::before{opacity:1;}
+  .card>*,.pkg>*{position:relative;z-index:1;}
+  .pkg{transform-style:preserve-3d;transition:transform .2s ease,border-color .2s ease;}
 
-  .services{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-  .service{
-    background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px 24px;
-    display:flex;flex-direction:column;gap:14px;
-  }
-  .service:hover{border-color:rgba(240,180,41,.42);}
-  .service .tag{font-family:var(--mono);font-size:11.5px;color:var(--accent);letter-spacing:.1em;}
-  .service h3{margin:0;font-size:22px;letter-spacing:-.015em;}
-  .service p{margin:0;color:var(--muted);font-size:15px;}
-  .service ul{margin:0;padding-left:18px;color:#c3ceda;font-size:14.5px;}
-  .service li{margin:5px 0;}
-  .service .foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--muted);}
-  .service .foot b{color:var(--text);}
+  .ripple{position:absolute;border-radius:50%;background:currentColor;opacity:.22;transform:scale(0);
+    animation:ripple .62s ease-out forwards;pointer-events:none;}
+  @keyframes ripple{to{transform:scale(1);opacity:0;}}
 
-  .case{
-    background:var(--panel-2);border:1px solid var(--line);border-radius:16px;
-    padding:30px;margin-bottom:18px;
+  @media (hover:none),(pointer:coarse){.cursor-glow,.cursor-ring{display:none;}}
+
+  /* hero */
+  .hero{padding:96px 0 74px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;}
+  .hero-grid{display:grid;grid-template-columns:1.18fr .82fr;gap:56px;align-items:center;}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;}
+  .eyebrow i{width:26px;height:1px;background:var(--gold);display:block;}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(126,231,135,.14);display:inline-block;}
+  h1{font-family:var(--serif);font-weight:700;font-size:clamp(44px,6.4vw,82px);line-height:.99;letter-spacing:-.03em;margin:0 0 26px;max-width:13ch;}
+  h1 em{font-style:normal;color:var(--gold);}
+  .lede{max-width:54ch;color:var(--body);font-size:19px;margin:0 0 32px;}
+  .lede strong{color:var(--cream);font-weight:600;}
+  .hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+  .hero-note{margin-top:18px;color:var(--muted);font-size:13px;display:flex;align-items:center;gap:8px;}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:40px;}
+  .chip{font-family:var(--mono);font-size:11.5px;color:var(--body);border:1px solid var(--line);background:rgba(18,24,33,.7);padding:7px 11px;border-radius:999px;}
+
+  /* hero card */
+  .ticket{
+    background:linear-gradient(165deg,rgba(242,181,68,.13),rgba(242,181,68,.02) 55%),var(--panel-2);
+    border:1px solid rgba(242,181,68,.26);border-radius:20px;padding:26px;
+    box-shadow:0 30px 70px -40px rgba(0,0,0,.9);
   }
-  .case-top{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:start;}
-  .case h3{margin:0 0 4px;font-size:25px;letter-spacing:-.02em;}
-  .case .sub{color:var(--muted);font-size:14px;margin:0;}
-  .status{
-    font-family:var(--mono);font-size:11.5px;color:var(--accent-2);
-    border:1px solid rgba(126,231,135,.32);background:rgba(126,231,135,.07);
-    padding:6px 10px;border-radius:999px;white-space:nowrap;
-  }
-  .case-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;margin-top:22px;}
-  .case p{color:#c3ceda;margin:0 0 12px;font-size:15.5px;}
-  .case ul{margin:0;padding-left:18px;color:#c3ceda;font-size:14.5px;}
+  .ticket-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;}
+  .ticket-head span{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+  .pill{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--green);border:1px solid rgba(126,231,135,.35);background:rgba(126,231,135,.08);padding:5px 9px;border-radius:999px;white-space:nowrap;}
+  .ticket dl{margin:0;display:grid;gap:12px;}
+  .ticket .row{display:flex;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:1px dashed var(--line);font-size:14px;}
+  .ticket .row:last-child{border-bottom:0;padding-bottom:0;}
+  .ticket dt{color:var(--muted);}
+  .ticket dd{margin:0;text-align:right;font-weight:600;}
+  .ticket .total{padding-top:4px;font-size:15px;}
+  .ticket .total dd{color:var(--gold);font-family:var(--serif);font-size:26px;line-height:1;}
+  .ticket-foot{margin-top:20px;font-size:12.5px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;}
+
+  /* sections */
+  section{padding:92px 0;border-bottom:1px solid var(--line);}
+  .section-head{display:flex;justify-content:space-between;align-items:end;gap:32px;flex-wrap:wrap;margin-bottom:44px;}
+  .section-head>div{max-width:34ch;}
+  .label{font-family:var(--mono);font-size:11.5px;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;margin-bottom:14px;}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4.2vw,46px);line-height:1.06;letter-spacing:-.025em;margin:0;}
+  .section-head p{max-width:48ch;color:var(--muted);margin:0;font-size:16px;}
+
+  /* service cards */
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:28px;display:flex;flex-direction:column;gap:12px;transition:border-color .18s ease,transform .18s ease;position:relative;overflow:hidden;}
+  .card:hover{border-color:rgba(242,181,68,.4);transform:translateY(-2px);}
+  .card .num{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.12em;}
+  .card h3{margin:0;font-size:21px;letter-spacing:-.015em;font-weight:650;}
+  .card p{margin:0;color:var(--muted);font-size:15px;}
+  .card ul{margin:0;padding-left:18px;color:var(--body);font-size:14.5px;}
+  .card li{margin:4px 0;}
+  .card .foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--muted);}
+  .card .foot b{color:var(--cream);}
+
+  /* packages */
+  .packages{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;}
+  .pkg{background:var(--panel-2);border:1px solid var(--line);border-radius:18px;padding:28px 24px;display:flex;flex-direction:column;gap:14px;position:relative;}
+  .pkg.featured{border-color:rgba(242,181,68,.45);background:linear-gradient(170deg,rgba(242,181,68,.10),transparent 55%),var(--panel-2);}
+  .pkg .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+  .pkg.featured .tag{color:var(--gold);}
+  .pkg h3{margin:0;font-size:20px;}
+  .pkg .price{font-family:var(--serif);font-size:42px;line-height:1;letter-spacing:-.03em;}
+  .pkg .price span{font-family:var(--sans);font-size:13px;color:var(--muted);letter-spacing:0;margin-left:6px;}
+  .pkg p{margin:0;color:var(--muted);font-size:14.5px;}
+  .pkg ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:14px;color:var(--body);}
+  .pkg li{display:flex;gap:9px;}
+  .pkg li::before{content:"✓";color:var(--green);font-weight:700;}
+  .pkg .btn{margin-top:auto;width:100%;font-size:14px;padding:12px 16px;}
+  .badge{position:absolute;top:-11px;right:18px;background:var(--gold);color:#161005;font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:4px 9px;border-radius:999px;}
+
+  /* proof */
+  .case{background:var(--panel-2);border:1px solid var(--line);border-radius:18px;padding:30px;margin-bottom:16px;}
+  .case-top{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:start;margin-bottom:20px;}
+  .case h3{margin:0 0 3px;font-size:24px;letter-spacing:-.02em;}
+  .case .sub{color:var(--muted);font-size:13px;margin:0;font-family:var(--mono);}
+  .status{font-family:var(--mono);font-size:11px;color:var(--green);border:1px solid rgba(126,231,135,.3);background:rgba(126,231,135,.07);padding:6px 10px;border-radius:999px;white-space:nowrap;}
+  .case-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;}
+  .case p{color:var(--body);margin:0 0 12px;font-size:15px;}
+  .case ul{margin:0;padding-left:18px;color:var(--body);font-size:14.5px;}
   .case li{margin:5px 0;}
-  .evidence{
-    background:#080c11;border:1px solid var(--line);border-radius:11px;padding:16px 17px;
-    font-family:var(--mono);font-size:12.5px;line-height:1.65;color:#b9c6d3;overflow:auto;
-  }
-  .evidence .ok{color:var(--accent-2);}
-  .evidence .warn{color:var(--accent);}
-  .evidence .dim{color:#6f7f8f;}
-  .case details{margin-top:14px;}
-  .case summary{cursor:pointer;color:var(--accent);font-size:13.5px;font-family:var(--mono);}
-  .case table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13.5px;}
-  .case th,.case td{text-align:left;padding:8px 9px;border-bottom:1px solid var(--line);}
+  .evidence{background:#070a0e;border:1px solid var(--line);border-radius:12px;padding:16px;font-family:var(--mono);font-size:12px;line-height:1.75;color:#b9c6d3;overflow:auto;}
+  .ok{color:var(--green);}.warn{color:var(--gold);}.dim{color:#6b7a89;}.bad{color:var(--red);}
+  .case details{margin-top:16px;border-top:1px solid var(--line);padding-top:12px;}
+  .case summary{cursor:pointer;color:var(--gold);font-size:13px;font-family:var(--mono);}
+  .case table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px;}
+  .case th,.case td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);}
   .case th{color:var(--muted);font-weight:600;}
-  .bad{color:#ff7b72;}
-  .good{color:var(--accent-2);}
 
-  .process{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
-  .step{border-top:2px solid var(--accent);padding-top:16px;}
-  .step b{display:block;font-family:var(--mono);font-size:12px;color:var(--accent);margin-bottom:8px;}
-  .step h4{margin:0 0 6px;font-size:17px;}
-  .step p{margin:0;color:var(--muted);font-size:14px;}
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel-2);}
+  .step{padding:26px 22px;border-right:1px solid var(--line);}
+  .step:last-child{border-right:0;}
+  .step b{display:block;font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.12em;margin-bottom:12px;}
+  .step h4{margin:0 0 6px;font-size:16.5px;}
+  .step p{margin:0;color:var(--muted);font-size:13.5px;}
 
-  .rates{display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:start;}
-  table.rates-table{width:100%;border-collapse:collapse;font-size:15px;}
-  table.rates-table th,table.rates-table td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--line);}
-  table.rates-table th{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+  /* rates */
+  .rates{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:start;}
+  table.rates-table{width:100%;border-collapse:collapse;font-size:15px;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  table.rates-table th,table.rates-table td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line);}
+  table.rates-table tr:last-child td{border-bottom:0;}
+  table.rates-table th{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:rgba(243,238,228,.02);}
   table.rates-table td:last-child{text-align:right;font-weight:650;white-space:nowrap;}
-  .pay{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;}
-  .pay h3{margin:0 0 10px;font-size:19px;}
-  .pay p{color:var(--muted);font-size:14.5px;margin:0 0 14px;}
-  .pay ul{margin:0;padding-left:18px;color:#c3ceda;font-size:14px;}
+  table.rates-table tr:hover td{background:rgba(242,181,68,.04);}
+  .pay{background:linear-gradient(165deg,rgba(242,181,68,.09),transparent 60%),var(--panel);border:1px solid rgba(242,181,68,.24);border-radius:16px;padding:26px;}
+  .pay h3{margin:0 0 8px;font-size:19px;}
+  .pay p{color:var(--muted);font-size:14px;margin:0 0 14px;}
+  .pay ul{margin:0;padding-left:18px;color:var(--body);font-size:14px;}
   .pay li{margin:6px 0;}
+  .pay .warnbox{margin-top:16px;padding:12px 14px;border:1px dashed var(--line-strong);border-radius:10px;font-size:12.5px;color:var(--muted);}
 
-  .contact{display:flex;justify-content:space-between;gap:30px;align-items:center;flex-wrap:wrap;}
-  .contact h2{margin:0 0 8px;font-size:clamp(28px,4vw,40px);letter-spacing:-.025em;}
-  .contact p{margin:0;color:var(--muted);max-width:52ch;}
+  /* faq */
+  .faq{display:grid;gap:10px;max-width:900px;}
+  .faq details{border:1px solid var(--line);border-radius:12px;background:var(--panel-2);padding:0;}
+  .faq summary{cursor:pointer;padding:18px 20px;font-weight:600;font-size:15.5px;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center;}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:"+";color:var(--gold);font-family:var(--mono);font-size:18px;line-height:1;}
+  .faq details[open] summary::after{content:"−";}
+  .faq .a{padding:0 20px 18px;color:var(--muted);font-size:14.5px;}
+  .faq .a a{color:var(--gold);}
+
+  /* contact */
+  .contact-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:start;}
+  .contact h2{margin:0 0 12px;}
+  .contact p{color:var(--muted);margin:0 0 22px;max-width:44ch;}
   .contact-links{display:flex;gap:10px;flex-wrap:wrap;}
+  .brief{background:var(--panel-2);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .brief-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);}
+  .brief-head span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+  .copy{background:transparent;border:1px solid var(--line-strong);color:var(--cream);border-radius:8px;padding:6px 11px;font-size:12px;cursor:pointer;font-family:var(--mono);}
+  .copy:hover{border-color:var(--gold);color:var(--gold);}
+  .brief pre{margin:0;padding:16px;font-family:var(--mono);font-size:12.5px;line-height:1.8;color:#c9d6e2;white-space:pre-wrap;}
 
-  footer{padding:38px 0;color:var(--muted);font-size:13px;}
-  .foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+  footer{padding:40px 0 48px;color:var(--muted);font-size:13px;}
+  .foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;}
   .foot a{color:var(--muted);text-decoration:none;}
-  .foot a:hover{color:var(--text);}
-  .disclaimer{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:#77869a;max-width:90ch;}
+  .foot a:hover{color:var(--cream);}
+  .disclaimer{margin-top:20px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:#74828f;max-width:96ch;line-height:1.7;}
 
-  @media (max-width:900px){
-    .services,.process{grid-template-columns:1fr 1fr;}
-    .case-grid,.rates{grid-template-columns:1fr;}
-    .nav-links{gap:10px;}
-    .nav-links a:not(.btn){display:none;}
-    .nav-links a.btn{display:inline-block;padding:9px 12px;font-size:12.5px;}
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease;}
+  .reveal.in{opacity:1;transform:none;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .reveal{opacity:1;transform:none;transition:none;}
+    .btn,.card,.pkg,.nav-cta{transition:none;}
+    .cursor-glow,.cursor-ring{display:none;}
+    .card::before,.pkg::before{display:none;}
+    .ripple{display:none;}
   }
-  @media (max-width:620px){
-    .services,.process{grid-template-columns:1fr;}
-    section{padding:64px 0;}
-    .hero{padding:64px 0 54px;}
+
+  @media (max-width:980px){
+    .hero-grid,.contact-grid,.rates{grid-template-columns:1fr;}
+    .ticket{max-width:520px;}
+    .cards,.packages{grid-template-columns:1fr 1fr;}
+    .steps{grid-template-columns:1fr 1fr;}
+    .step:nth-child(2){border-right:0;}
+    .step:nth-child(1),.step:nth-child(2){border-bottom:1px solid var(--line);}
+    .case-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:760px){
+    .nav-links{position:fixed;inset:74px 0 auto 0;background:var(--ink-2);border-bottom:1px solid var(--line);flex-direction:column;align-items:stretch;padding:16px 26px 22px;gap:4px;display:none;}
+    .nav-links.open{display:flex;}
+    .nav-links a{padding:11px 0;font-size:15px;border-bottom:1px solid var(--line);}
+    .nav-links a:last-child{border-bottom:0;margin-top:8px;justify-content:center;}
+    .nav-links a::after{display:none;}
+    .menu-btn{display:inline-flex;}
+    .hero{padding:64px 0 56px;}
+    section{padding:66px 0;}
+    .cards,.packages{grid-template-columns:1fr;}
+    .steps{grid-template-columns:1fr;}
+    .step{border-right:0;border-bottom:1px solid var(--line);}
+    .step:last-child{border-bottom:0;}
+    .section-head{margin-bottom:32px;}
   }
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="progress" aria-hidden="true"></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
 
 <header>
   <div class="wrap nav">
-    <div class="brand">
-      <div class="brand-mark">PL</div>
-      <div>PirateLeague Dev<small>Small software, fixed scope</small></div>
-    </div>
-    <nav class="nav-links">
+    <a class="brand" href="#top" aria-label="PirateLeague Dev, home">
+      <span class="brand-mark" aria-hidden="true">PL</span>
+      <span class="brand-txt">PirateLeague<small>Small software, fixed scope</small></span>
+    </a>
+    <nav class="nav-links" id="navlinks" aria-label="Main">
       <a href="#services">Services</a>
-      <a href="#work">Work</a>
+      <a href="#packages">Packages</a>
+      <a href="#work">Proof</a>
       <a href="#process">Process</a>
       <a href="#rates">Rates</a>
-      <a class="btn btn-primary" href="#contact">Start a project</a>
+      <a href="#faq">FAQ</a>
+      <a class="nav-cta" href="#contact">Start a job →</a>
     </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlinks" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
   </div>
 </header>
 
-<div class="hero">
-  <div class="wrap">
-    <div class="kicker">Paper · Discord · Python · Java</div>
-    <h1>I build it, fix it, <span>and ship it.</span></h1>
-    <p class="lede">Custom Paper plugins, Discord bots and small business automations. Fixed scope, fixed price, delivered in days — with the source code and a setup guide.</p>
-    <div class="hero-actions">
-      <a class="btn btn-primary" href="#work">See the working demos</a>
-      <a class="btn btn-ghost" href="#rates">Rates</a>
+<main id="main">
+<div class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow"><span class="dot" aria-hidden="true"></span> Taking small jobs · CET · reply within 24h</div>
+      <h1>Your plugin broke. I ship it <em>fixed.</em></h1>
+      <p class="lede">Paper plugins, lag diagnostics, Discord bots and small Java or Python tools. <strong>Fixed price agreed up front, tested before delivery, source code included</strong> — and you pay only after you have tested it.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#packages">See fixed prices</a>
+        <a class="btn btn-ghost" href="#work">Check the proof first</a>
+      </div>
+      <p class="hero-note"><span class="dot" aria-hidden="true"></span> If I can't fix it, you pay nothing — and you get a written reason why.</p>
+      <div class="chips" aria-label="Technologies">
+        <span class="chip">Paper 1.21.x</span>
+        <span class="chip">Java 21</span>
+        <span class="chip">discord.js 14</span>
+        <span class="chip">Python 3.14</span>
+        <span class="chip">LTC / escrow</span>
+      </div>
     </div>
-    <div class="chips">
-      <span class="chip">Paper 1.21</span>
-      <span class="chip">discord.js 14</span>
-      <span class="chip">Python 3.14</span>
-      <span class="chip">Java 21</span>
-      <span class="chip">LTC / escrow</span>
-      <span class="chip">CET timezone</span>
-    </div>
+
+    <aside class="ticket" aria-label="Example job quote">
+      <div class="ticket-head">
+        <span>Example quote</span>
+        <span class="pill">FIXED PRICE</span>
+      </div>
+      <dl>
+        <div class="row"><dt>Plugin won't load after 1.21 update</dt><dd>Rescue Fix</dd></div>
+        <div class="row"><dt>Console error + broken command</dt><dd>included</dd></div>
+        <div class="row"><dt>Tested on Paper 1.21.x</dt><dd>included</dd></div>
+        <div class="row"><dt>Source + README</dt><dd>included</dd></div>
+        <div class="row"><dt>One revision round</dt><dd>included</dd></div>
+        <div class="row total"><dt>You pay after testing</dt><dd>$85</dd></div>
+      </dl>
+      <p class="ticket-foot"><span aria-hidden="true">↳</span> Scope confirmed in writing before I start. No hourly billing, no surprise invoice.</p>
+    </aside>
   </div>
 </div>
 
 <section id="services">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div>
-        <div class="label">Services</div>
-        <h2>Three things I do well.</h2>
+        <div class="label">01 — What I do</div>
+        <h2>Four narrow services. Done properly.</h2>
       </div>
-      <p>Small, clearly scoped work. If a request is not worth the money, I say so before you pay.</p>
+      <p>I take work that can be finished and tested in days, not months. If a request is outside what I can do well, I say so before you pay.</p>
     </div>
-    <div class="services">
-      <article class="service">
-        <div class="tag">A — MINECRAFT</div>
-        <h3>Paper plugin development</h3>
-        <p>New plugins, bug fixes, performance diagnostics and features added to existing plugins.</p>
+    <div class="cards">
+      <article class="card reveal">
+        <div class="num">A — MINECRAFT</div>
+        <h3>Paper plugin rescue</h3>
+        <p>A plugin that broke after an update, lost its author, or no longer compiles on 1.21.x.</p>
         <ul>
-          <li>Custom commands, GUIs and data storage</li>
-          <li>Lag and crash diagnosis before optimization</li>
-          <li>Extend or repair an existing codebase</li>
+          <li>Reproduce the error, patch the cause</li>
+          <li>Version migration 1.8–1.20 → 1.21.x</li>
+          <li>Tested jar + source + short README</li>
         </ul>
-        <div class="foot"><span>From <b>$45</b></span><span>1–3 days</span></div>
+        <div class="foot"><span>From <b>$25</b></span><span>1–5 days</span></div>
       </article>
-      <article class="service">
-        <div class="tag">B — DISCORD</div>
-        <h3>Bots that handle support</h3>
-        <p>Tickets, moderation, onboarding and API integrations — not another generic economy bot.</p>
+      <article class="card reveal">
+        <div class="num">B — PERFORMANCE</div>
+        <h3>Lag diagnosis &amp; fix</h3>
+        <p>TPS drops, tick spikes, entity or chunk load. Measure first, then change one thing at a time.</p>
         <ul>
-          <li>Private ticket channels with permissions</li>
-          <li>Slash commands and button flows</li>
-          <li>SQLite or external API integration</li>
+          <li>Spark profile read and explained</li>
+          <li>Top tick costs with exact config changes</li>
+          <li>Re-profile after the fix as proof</li>
+        </ul>
+        <div class="foot"><span>From <b>$35</b></span><span>1–3 days</span></div>
+      </article>
+      <article class="card reveal">
+        <div class="num">C — DISCORD</div>
+        <h3>Bots that handle support</h3>
+        <p>Tickets, applications, onboarding and staff workflows — not another generic economy bot.</p>
+        <ul>
+          <li>Private ticket channels and permissions</li>
+          <li>Slash commands, buttons, SQLite storage</li>
+          <li>Small API integrations</li>
         </ul>
         <div class="foot"><span>From <b>$90</b></span><span>2–4 days</span></div>
       </article>
-      <article class="service">
-        <div class="tag">C — SOFTWARE</div>
-        <h3>Small business automation</h3>
-        <p>Python tools, Java utilities and small web apps that remove a repetitive manual task.</p>
+      <article class="card reveal">
+        <div class="num">D — SOFTWARE</div>
+        <h3>Python &amp; Java automation</h3>
+        <p>One repetitive task turned into a small tool you can run yourself, with the code and instructions.</p>
         <ul>
-          <li>CSV / Excel / bank reconciliation</li>
-          <li>API integrations and scheduled jobs</li>
-          <li>Internal tools with a simple UI</li>
+          <li>CSV / Excel cleaning and reconciliation</li>
+          <li>Scheduled jobs and API calls</li>
+          <li>Internal CLI tools, no cloud required</li>
         </ul>
         <div class="foot"><span>From <b>$75</b></span><span>1–5 days</span></div>
       </article>
@@ -252,32 +412,84 @@
   </div>
 </section>
 
+<section id="packages">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="label">02 — Rescue packages</div>
+        <h2>Pick the size. The price doesn't move.</h2>
+      </div>
+      <p>Every package includes testing before delivery, the source code, a README and one revision round. Payment after you confirm it works.</p>
+    </div>
+    <div class="packages">
+      <article class="pkg reveal">
+        <div class="tag">Triage</div>
+        <h3>Find out what's wrong</h3>
+        <div class="price">$35 <span>credited if you continue</span></div>
+        <p>Send the jar, the console error and (if you have it) the source. You get a verdict, the cause and a fixed quote.</p>
+        <ul>
+          <li>Answer within 24 hours</li>
+          <li>Written cause, not a guess</li>
+          <li>Full $35 off the fix</li>
+        </ul>
+        <a class="btn btn-ghost" href="#contact">Start with triage</a>
+      </article>
+      <article class="pkg featured reveal">
+        <span class="badge">MOST JOBS</span>
+        <div class="tag">Rescue fix</div>
+        <h3>Make it work again</h3>
+        <div class="price">$85 <span>fixed</span></div>
+        <p>I reproduce the failure, patch it and test it on Paper 1.21.x. You get a working jar plus the code.</p>
+        <ul>
+          <li>Jar + source + README</li>
+          <li>Tested before delivery</li>
+          <li>One revision included</li>
+          <li>No fix, no invoice</li>
+        </ul>
+        <a class="btn btn-primary" href="#contact">Send your error</a>
+      </article>
+      <article class="pkg reveal">
+        <div class="tag">Migration</div>
+        <h3>Move it to 1.21.x</h3>
+        <div class="price">$120 <span>fixed</span></div>
+        <p>An old plugin that still runs on 1.8–1.20 and needs to work on a current Paper build.</p>
+        <ul>
+          <li>Dependency and API updates</li>
+          <li>Behaviour checked against the old version</li>
+          <li>Or a written "this cannot be ported"</li>
+        </ul>
+        <a class="btn btn-ghost" href="#contact">Check compatibility</a>
+      </article>
+    </div>
+  </div>
+</section>
+
 <section id="work">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div>
-        <div class="label">Work</div>
+        <div class="label">03 — Proof</div>
         <h2>Three demos, built and checked.</h2>
       </div>
-      <p>Not mockups. Each demo has source code, a README and a check that actually ran. They are demo projects, not client work.</p>
+      <p>Not mockups. Each project has source code, a README and a check that actually ran. They are self-built demos, not paid client work.</p>
     </div>
 
-    <article class="case">
+    <article class="case reveal">
       <div class="case-top">
         <div>
           <h3>LagAudit</h3>
-          <p class="sub">Paper plugin · Java 21 · diagnosis before optimization</p>
+          <p class="sub">Paper plugin · Java 21 · measure before optimizing</p>
         </div>
-        <span class="status">BUILT · JAR 9,325 BYTES</span>
+        <span class="status">COMPILES · JAR 9,325 BYTES</span>
       </div>
       <div class="case-grid">
         <div>
-          <p><strong>The problem.</strong> A server owner says “the server lags” and gets sold optimization before anyone knows whether the cause is entities, chunks, tile entities, a plugin or the host.</p>
+          <p><strong>The problem.</strong> "The server lags" usually ends in random optimization before anyone knows whether the cause is entities, chunks, tile entities, a plugin or the host.</p>
           <p><strong>What it does.</strong> <code>/lagaudit scan</code> samples TPS, counts loaded chunks, entities and tile entities, ranks the 15 heaviest chunks and writes a timestamped report. <code>/lagaudit top</code> gives the short version in-game.</p>
           <ul>
-            <li>Runs on Paper 1.21.4 API; no database or external service</li>
-            <li>Report goes to <code>plugins/LagAudit/reports/</code></li>
-            <li>Explicitly does not change the world — measure first</li>
+            <li>Read-only: it changes nothing in the world</li>
+            <li>Report to <code>plugins/LagAudit/reports/</code></li>
+            <li>Paper 1.21.4 API, no database</li>
           </ul>
         </div>
         <div class="evidence">
@@ -285,20 +497,20 @@
 <span class="ok">maven_exit=0</span><br>
 target/LagAudit-1.0.0.jar<br>
 <span class="dim">9,325 bytes</span><br><br>
-<span class="dim"># expected in-game output — format only, not a live run</span><br>
+<span class="dim"># expected format, not a live run</span><br>
 /lagaudit scan<br>
-<span class="ok">Scan klaar in &lt;ms&gt;.</span><br>
-Rapport: plugins/LagAudit/reports/report-&lt;timestamp&gt;.txt<br>
-TPS &lt;1m&gt;, &lt;chunks&gt; chunks, &lt;entities&gt; entities, &lt;tiles&gt; tile entities.
+<span class="ok">Scan finished in &lt;ms&gt;.</span><br>
+Report: plugins/LagAudit/reports/report-&lt;timestamp&gt;.txt<br>
+TPS &lt;1m&gt;, &lt;chunks&gt; chunks, &lt;entities&gt; entities.
         </div>
       </div>
       <details>
         <summary>What is verified, and what is not</summary>
-        <p style="margin-top:10px">Verified: the project compiles against the Paper API and produces a loadable jar. Not verified: behaviour on a live Paper server, because no server was available in this environment. The plugin is deliberately read-only.</p>
+        <p style="margin-top:10px">Verified: the project compiles against the Paper API and produces a loadable jar. Not verified: behaviour on a live Paper server, because no server was available while building it. The plugin is deliberately read-only.</p>
       </details>
     </article>
 
-    <article class="case">
+    <article class="case reveal">
       <div class="case-top">
         <div>
           <h3>TicketDesk</h3>
@@ -312,8 +524,8 @@ TPS &lt;1m&gt;, &lt;chunks&gt; chunks, &lt;entities&gt; entities, &lt;tiles&gt; 
           <p><strong>What it does.</strong> A panel button opens a private channel; the owner and staff can talk, add another person, and close with a reason. Every ticket is stored in SQLite with number, owner and status.</p>
           <ul>
             <li><code>/ticket setup</code>, <code>/ticket add</code>, <code>/ticket close</code></li>
-            <li>Permissions: owner or Manage Server only</li>
-            <li>One open ticket per user; sequential numbering</li>
+            <li>Owner or Manage Server only</li>
+            <li>One open ticket per user, sequential numbers</li>
           </ul>
         </div>
         <div class="evidence">
@@ -332,7 +544,7 @@ tests 4 · pass 4 · fail 0<br>
       </details>
     </article>
 
-    <article class="case">
+    <article class="case reveal">
       <div class="case-top">
         <div>
           <h3>Invoice Reconciler</h3>
@@ -345,9 +557,9 @@ tests 4 · pass 4 · fail 0<br>
           <p><strong>The problem.</strong> A small business exports bank lines and invoices, then checks them by hand. Underpayments, duplicate payments and unknown deposits are easy to miss.</p>
           <p><strong>What it does.</strong> Matches transactions on payment reference, with an amount/date/customer fallback. Flags paid, open, missing, underpaid, overpaid and duplicate invoices, plus unmatched bank lines.</p>
           <ul>
-            <li>One command; no cloud, account or subscription</li>
-            <li>Markdown report plus a non-zero exit code for exceptions</li>
-            <li>Works on a CSV export with date, description, amount and reference columns</li>
+            <li>One command, no cloud or subscription</li>
+            <li>Markdown report, non-zero exit code on exceptions</li>
+            <li>Works on a normal CSV export</li>
           </ul>
         </div>
         <div class="evidence">
@@ -355,10 +567,10 @@ tests 4 · pass 4 · fail 0<br>
 <span class="ok">Ran 10 tests in 0.001s — OK</span><br><br>
 <span class="dim">$</span> python reconciler.py --bank sample/bank.csv \<br>
 &nbsp;&nbsp;--invoices sample/invoices.csv --today 2026-11-01<br><br>
-Gefactureerd <span class="warn">5,470.00</span> · Ontvangen <span class="warn">5,730.00</span><br>
-Nog te ontvangen <span class="warn">90.00</span> · Niet gematcht <span class="warn">1</span><br>
-<span class="bad">INV-1003 UNDERPAID — 90.00 tekort</span><br>
-<span class="bad">INV-1005 DUPLICATE — 350.00 te veel</span>
+Invoiced <span class="warn">5,470.00</span> · Received <span class="warn">5,730.00</span><br>
+Outstanding <span class="warn">90.00</span> · Unmatched <span class="warn">1</span><br>
+<span class="bad">INV-1003 UNDERPAID — 90.00 short</span><br>
+<span class="bad">INV-1005 DUPLICATE — 350.00 over</span>
         </div>
       </div>
       <details>
@@ -366,14 +578,14 @@ Nog te ontvangen <span class="warn">90.00</span> · Niet gematcht <span class="w
         <table>
           <thead><tr><th>Invoice</th><th>Customer</th><th>Amount</th><th>Paid</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>INV-1001</td><td>Acme BV</td><td>1,250.00</td><td>1,250.00</td><td class="good">PAID</td></tr>
-            <tr><td>INV-1002</td><td>Blue Oak</td><td>480.00</td><td>480.00</td><td class="good">PAID</td></tr>
+            <tr><td>INV-1001</td><td>Acme BV</td><td>1,250.00</td><td>1,250.00</td><td class="ok">PAID</td></tr>
+            <tr><td>INV-1002</td><td>Blue Oak</td><td>480.00</td><td>480.00</td><td class="ok">PAID</td></tr>
             <tr><td>INV-1003</td><td>Cedar Works</td><td>990.00</td><td>900.00</td><td class="bad">UNDERPAID</td></tr>
-            <tr><td>INV-1004</td><td>Delta Labs</td><td>2,400.00</td><td>2,400.00</td><td class="good">PAID (2 terms)</td></tr>
+            <tr><td>INV-1004</td><td>Delta Labs</td><td>2,400.00</td><td>2,400.00</td><td class="ok">PAID (2 terms)</td></tr>
             <tr><td>INV-1005</td><td>Echo Studio</td><td>350.00</td><td>700.00</td><td class="bad">DUPLICATE</td></tr>
           </tbody>
         </table>
-        <p style="margin-top:10px">Unmatched: 2026-10-27, “Unknown deposit”, 75.00.</p>
+        <p style="margin-top:10px">Unmatched: 2026-10-27, "Unknown deposit", 75.00.</p>
       </details>
     </article>
   </div>
@@ -381,88 +593,266 @@ Nog te ontvangen <span class="warn">90.00</span> · Niet gematcht <span class="w
 
 <section id="process">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div>
-        <div class="label">Process</div>
-        <h2>No hourly surprises.</h2>
+        <div class="label">04 — Process</div>
+        <h2>You know the price before I start.</h2>
       </div>
-      <p>You should know the price and the delivery date before work starts.</p>
+      <p>Four steps, each with an output you can check. No open-ended hourly work.</p>
     </div>
-    <div class="process">
-      <div class="step"><b>01</b><h4>Describe the problem</h4><p>What is broken or missing, what you already tried, and your deadline.</p></div>
-      <div class="step"><b>02</b><h4>Fixed quote</h4><p>I reply with scope, price and date. If it is not worth it, I say no.</p></div>
-      <div class="step"><b>03</b><h4>Build with updates</h4><p>50% upfront or escrow. One progress update halfway; questions are answered in the thread.</p></div>
-      <div class="step"><b>04</b><h4>Delivery</h4><p>Source, README and setup guide. Seven days of bug fixes on the delivered scope.</p></div>
+    <div class="steps reveal">
+      <div class="step"><b>01</b><h4>Send the problem</h4><p>Jar, console error, source if you have it, and your server version.</p></div>
+      <div class="step"><b>02</b><h4>Written verdict</h4><p>I confirm whether it is fixable, what caused it, the price and the date. Within 24 hours.</p></div>
+      <div class="step"><b>03</b><h4>Build &amp; test</h4><p>I patch it and test it on Paper 1.21.x before you see it.</p></div>
+      <div class="step"><b>04</b><h4>You test, then pay</h4><p>Working jar + source + README. One revision round. If it does not work, you pay nothing.</p></div>
     </div>
   </div>
 </section>
 
 <section id="rates">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div>
-        <div class="label">Rates</div>
+        <div class="label">05 — Rates</div>
         <h2>Clear starting points.</h2>
       </div>
-      <p>Final price depends on scope. A diagnosis is always the first paid step if the cause is unknown.</p>
+      <p>Final price depends on scope, but it is always agreed in writing first. Larger or unclear work gets a quote, not an hourly meter.</p>
     </div>
     <div class="rates">
-      <table class="rates-table">
+      <table class="rates-table reveal">
         <thead><tr><th>Work</th><th>Price</th></tr></thead>
         <tbody>
-          <tr><td>Diagnosis / audit with written report</td><td>$35</td></tr>
-          <tr><td>Small fix or single feature</td><td>$45–$75</td></tr>
-          <tr><td>Medium system or plugin</td><td>$120–$200</td></tr>
+          <tr><td>Small patch — one isolated fix</td><td>$25</td></tr>
+          <tr><td>Triage with written cause (credited to the fix)</td><td>$35</td></tr>
+          <tr><td>Rescue fix, tested jar + source</td><td>$85</td></tr>
+          <tr><td>Version migration to 1.21.x</td><td>$120</td></tr>
+          <tr><td>Self-contained module or larger plugin</td><td>from $120</td></tr>
           <tr><td>Discord ticket / moderation bot</td><td>from $90</td></tr>
           <tr><td>Python or Java automation</td><td>from $75</td></tr>
-          <tr><td>Hourly, for unclear scope</td><td>$25/h</td></tr>
-          <tr><td>Monthly maintenance (4 hours)</td><td>from $150</td></tr>
+          <tr><td>Hourly, only for unclear scope</td><td>$25/h</td></tr>
+          <tr><td>Maintenance, 4 hours per month</td><td>from $150</td></tr>
         </tbody>
       </table>
-      <aside class="pay">
+      <aside class="pay reveal">
         <h3>Payment</h3>
-        <p>Payment is agreed before work starts. No payment is marked received until it is confirmed.</p>
+        <p>Agreed before work starts. Nothing is marked as received until it is confirmed on-chain or by the escrow.</p>
         <ul>
           <li><strong>Litecoin (LTC)</strong> — address shared after the scope is agreed</li>
-          <li><strong>SEPA bank transfer</strong> — planned; not available yet</li>
-          <li><strong>Platform escrow</strong> — BuiltByBit middleman or the marketplace’s own escrow</li>
+          <li><strong>BuiltByBit escrow / middleman</strong> — welcome</li>
+          <li><strong>Pay after you test</strong> — standard on rescue work</li>
         </ul>
-        <p style="margin-top:14px">PayPal is currently not available. If that is a hard requirement, say so early and I will tell you honestly whether the job can proceed.</p>
+        <div class="warnbox">PayPal and SEPA are not available right now. If that is a hard requirement, say so in your first message and I will tell you honestly whether the job can go ahead.</div>
       </aside>
     </div>
   </div>
 </section>
 
-<section id="contact">
-  <div class="wrap contact">
-    <div>
-      <div class="label">Contact</div>
-      <h2>Send the problem, not a greeting.</h2>
-      <p>Include what you need, your deadline and your budget. I reply with a scope and a fixed price, or a clear no.</p>
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="label">06 — Straight answers</div>
+        <h2>Questions worth asking.</h2>
+      </div>
+      <p>No invented reviews, no borrowed screenshots. This is a small solo operation and the page says exactly what that means.</p>
     </div>
-    <div class="contact-links">
-      <a class="btn btn-primary" href="https://builtbybit.com/members/pirateleague.998043/" rel="noopener">BuiltByBit — pirateleague</a>
-      <a class="btn btn-ghost" href="https://old.reddit.com/user/pirateleage" rel="noopener">Reddit — u/pirateleage</a>
+    <div class="faq">
+      <details class="reveal">
+        <summary>Are the projects on this page client work?</summary>
+        <div class="a">No. All three are self-built demos. They show how I structure, test and document code — they are not paid client projects, and there are no testimonials or client names on this page because there are none yet.</div>
+      </details>
+      <details class="reveal">
+        <summary>What if you can't fix my plugin?</summary>
+        <div class="a">Then you pay nothing for the fix. You still get a short written explanation of what is wrong and why it cannot be repaired within the agreed scope, so you can take it to another developer or replace the plugin.</div>
+      </details>
+      <details class="reveal">
+        <summary>Do you need my source code?</summary>
+        <div class="a">For a code fix, yes — a jar alone cannot be patched properly. For configuration or lag work I need the config, the spark report and the plugin list. If you only have the jar, I will tell you upfront what is and is not possible.</div>
+      </details>
+      <details class="reveal">
+        <summary>Which versions do you work with?</summary>
+        <div class="a">Paper 1.21.x is the main target, with Spigot and Purpur close behind. Older plugins can be migrated from 1.8–1.20, but I confirm feasibility before quoting. Bedrock/Geyser setups are fine as long as the plugin itself is Java-side.</div>
+      </details>
+      <details class="reveal">
+        <summary>Do I get the source code?</summary>
+        <div class="a">Yes. Every delivery includes the source, a README with build and install steps, and the tested jar. You own the delivered code for your server; I do not resell it.</div>
+      </details>
+      <details class="reveal">
+        <summary>Why are the prices lower than an agency?</summary>
+        <div class="a">Because this is one developer with no sales team, no account manager and no office. You get a fixed quote, direct replies and tested work — not a discovery call. If a job is worth more than the listed price, I will say so before starting.</div>
+      </details>
     </div>
   </div>
 </section>
+
+<section id="contact">
+  <div class="wrap contact-grid">
+    <div class="contact reveal">
+      <div class="label">07 — Contact</div>
+      <h2>Send the error, not a greeting.</h2>
+      <p>Include the server version, what broke and when, plus your deadline. You get a scope and a fixed price — or a clear no.</p>
+      <div class="contact-links">
+        <a class="btn btn-primary" href="https://builtbybit.com/members/pirateleague.998043/" rel="noopener">Message me on BuiltByBit</a>
+        <a class="btn btn-ghost" href="https://old.reddit.com/user/pirateleage" rel="noopener">Reddit — u/pirateleage</a>
+      </div>
+      <p style="margin-top:16px;font-size:13px">Prefer the marketplace? My live BuiltByBit offer: <a href="https://builtbybit.com/threads/lagaudit-custom-paper-work-%E2%80%94-diagnostics-fixes-small-features-ltc-escrow.744997/" rel="noopener" style="color:var(--gold)">LagAudit &amp; custom Paper work</a>.</p>
+    </div>
+    <div class="brief reveal">
+      <div class="brief-head">
+        <span>Copy this brief</span>
+        <button class="copy" id="copyBtn" type="button">Copy</button>
+      </div>
+      <pre id="briefText">Hi — I need help with a Paper plugin.
+
+Server: Paper 1.21.x
+Plugin + version:
+What happens (error / behaviour):
+When it started:
+Source available: yes / no
+Deadline:
+Budget:</pre>
+    </div>
+  </div>
+</section>
+</main>
 
 <footer>
   <div class="wrap">
     <div class="foot">
       <div>© <span id="year">2026</span> PirateLeague Dev · Netherlands · CET</div>
-      <div>Paper · Discord · Python · Java</div>
+      <div><a href="#top">Back to top</a> · Paper · Discord · Python · Java</div>
     </div>
     <div class="disclaimer">
-      The three projects above are self-built demos, not paid client work. No testimonials or client names are invented.
-      The Paper plugin compiles against the Paper API but was not run on a live server; the Discord bot’s core is tested but was not connected to Discord without a token.
-      The Python tool was run end-to-end on the included sample data.
+      LagAudit, TicketDesk and Invoice Reconciler are self-built demo projects, not paid client work. No testimonials, client names or reviews are invented.
+      LagAudit compiles against the Paper API but was not run on a live server; TicketDesk's core is tested but was not connected to Discord without a token; Invoice Reconciler was run end-to-end on the included sample data.
+      Prices are starting points and are confirmed in writing per job.
     </div>
   </div>
 </footer>
 
 <script>
-  document.getElementById("year").textContent = new Date().getFullYear();
+  const nav = document.getElementById('navlinks');
+  const menuBtn = document.getElementById('menuBtn');
+  menuBtn.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  });
+  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    nav.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }));
+
+  const links = [...document.querySelectorAll('.nav-links a[href^="#"]')];
+  const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const onScroll = () => {
+    const y = window.scrollY + 120;
+    let current = sections[0];
+    for (const s of sections) if (s.offsetTop <= y) current = s;
+    links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current.id));
+
+    const max = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('progress').style.width = (max > 0 ? (scrollY / max) * 100 : 0) + '%';
+  };
+  addEventListener('scroll', onScroll, {passive: true});
+  onScroll();
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {rootMargin: '0px 0px -8% 0px', threshold: 0.08});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ---------- pointer effects ---------- */
+  const fine = matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if (fine) {
+    document.body.classList.add('has-cursor');
+    const glow = document.getElementById('cursorGlow');
+    const ring = document.getElementById('cursorRing');
+    let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my;
+
+    addEventListener('pointermove', e => {
+      mx = e.clientX; my = e.clientY;
+      glow.style.transform = `translate(${mx}px,${my}px)`;
+    }, {passive: true});
+
+    const trail = () => {
+      rx += (mx - rx) * 0.16;
+      ry += (my - ry) * 0.16;
+      ring.style.transform = `translate(${rx}px,${ry}px)`;
+      requestAnimationFrame(trail);
+    };
+    trail();
+
+    const hot = 'a,button,summary,.card,.pkg,.chip,pre,input';
+    addEventListener('pointerover', e => {
+      if (e.target.closest(hot)) document.body.classList.add('cursor-hot');
+    });
+    addEventListener('pointerout', e => {
+      const t = e.target.closest(hot);
+      if (t && !t.contains(e.relatedTarget)) document.body.classList.remove('cursor-hot');
+    });
+
+    document.querySelectorAll('.card,.pkg').forEach(el => {
+      el.addEventListener('pointermove', e => {
+        const r = el.getBoundingClientRect();
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        el.style.setProperty('--mx', x + 'px');
+        el.style.setProperty('--my', y + 'px');
+        if (el.classList.contains('pkg')) {
+          const dx = x / r.width - 0.5, dy = y / r.height - 0.5;
+          el.style.transform = `perspective(900px) rotateX(${(-dy * 3).toFixed(2)}deg) rotateY(${(dx * 3).toFixed(2)}deg) translateY(-2px)`;
+        }
+      });
+      el.addEventListener('pointerleave', () => {
+        el.style.removeProperty('--mx');
+        el.style.removeProperty('--my');
+        el.style.transform = '';
+      });
+    });
+
+    document.querySelectorAll('.btn').forEach(b => {
+      b.addEventListener('pointermove', e => {
+        const r = b.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+        const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+        b.style.setProperty('--tx', (dx * 5).toFixed(2) + 'px');
+        b.style.setProperty('--ty', (dy * 4).toFixed(2) + 'px');
+      });
+      b.addEventListener('pointerleave', () => {
+        b.style.setProperty('--tx', '0px');
+        b.style.setProperty('--ty', '0px');
+      });
+      b.addEventListener('pointerdown', e => {
+        const r = b.getBoundingClientRect();
+        const d = Math.max(r.width, r.height) * 1.7;
+        const s = document.createElement('span');
+        s.className = 'ripple';
+        s.style.width = s.style.height = d + 'px';
+        s.style.left = (e.clientX - r.left - d / 2) + 'px';
+        s.style.top = (e.clientY - r.top - d / 2) + 'px';
+        b.appendChild(s);
+        setTimeout(() => s.remove(), 650);
+      });
+    });
+  }
+
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.addEventListener('click', async () => {
+    const text = document.getElementById('briefText').textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+      copyBtn.textContent = 'Copied';
+      setTimeout(() => copyBtn.textContent = 'Copy', 1600);
+    } catch {
+      const r = document.createRange();
+      r.selectNodeContents(document.getElementById('briefText'));
+      const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      copyBtn.textContent = 'Selected';
+      setTimeout(() => copyBtn.textContent = 'Copy', 1600);
+    }
+  });
 </script>
 </body>
 </html>
