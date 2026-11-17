@@ -17,18 +17,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#08090a;
-    --bg-2:#0d0f11;
-    --card:#111417;
-    --card-2:#161a1e;
-    --ink:#f4f2ec;
-    --body:#c2c7cc;
-    --muted:#8a9096;
+    --bg:#07070c;
+    --bg-2:#0b0b14;
+    --card:#0e0e19;
+    --card-2:#13131f;
+    --ink:#f6f5ff;
+    --body:#c4c3d6;
+    --muted:#8d8ca6;
     --line:rgba(255,255,255,.09);
-    --line-2:rgba(255,255,255,.16);
+    --line-2:rgba(255,255,255,.17);
     --accent:#d6ff3f;
-    --accent-ink:#0b0d05;
+    --accent-ink:#08110a;
+    --cyan:#5fe3ff;
+    --violet:#a78bfa;
+    --pink:#ff7ac8;
+    --amber:#ffc46b;
     --good:#7ee787;
+    --grad:linear-gradient(100deg,#d6ff3f,#6bf7c8 45%,#5fe3ff);
+    --grad-text:linear-gradient(100deg,#f6f5ff,#a78bfa 58%,#5fe3ff);
     --display:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
     --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     --serif:"Instrument Serif",Georgia,serif;
@@ -50,8 +56,11 @@
     -webkit-font-smoothing:antialiased;text-wrap:pretty;overflow-x:hidden;
   }
   body::before{
-    content:"";position:fixed;inset:0 0 auto 0;height:560px;z-index:0;pointer-events:none;
-    background:radial-gradient(58% 100% at 50% 0,rgba(214,255,63,.11),transparent 72%);
+    content:"";position:fixed;inset:0 0 auto 0;height:880px;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(900px 430px at 15% -8%,rgba(167,139,250,.28),transparent 70%),
+      radial-gradient(820px 400px at 85% -2%,rgba(95,227,255,.18),transparent 70%),
+      radial-gradient(720px 520px at 52% 26%,rgba(255,122,200,.11),transparent 75%);
   }
   ::selection{background:var(--accent);color:var(--accent-ink)}
   a{color:inherit}
@@ -259,6 +268,73 @@
     .menu,.btn{transition:none}
   }
 
+  /* ---------- colour layer ---------- */
+  #services{--sec:var(--accent);--sec-soft:rgba(214,255,63,.15)}
+  #fix{--sec:var(--cyan);--sec-soft:rgba(95,227,255,.15)}
+  #audit{--sec:var(--violet);--sec-soft:rgba(167,139,250,.18)}
+  #prices{--sec:var(--pink);--sec-soft:rgba(255,122,200,.14)}
+  #work{--sec:var(--amber);--sec-soft:rgba(255,196,107,.14)}
+  #process{--sec:var(--accent);--sec-soft:rgba(214,255,63,.12)}
+  #faq{--sec:var(--violet);--sec-soft:rgba(167,139,250,.14)}
+
+  .sec{position:relative}
+  .sec::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(660px 320px at 86% 0,var(--sec-soft),transparent 72%),
+      radial-gradient(520px 280px at 6% 88%,var(--sec-soft),transparent 75%)}
+  .sec::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;pointer-events:none;
+    background:linear-gradient(90deg,transparent,var(--sec),transparent);opacity:.35}
+  .sec > .shell{position:relative;z-index:1}
+  .sec .eyebrow{color:var(--sec)}
+  .sec .eyebrow::before{background:var(--sec)}
+
+  .brand .mark{background-image:var(--grad);color:#06110b}
+
+  .hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+  .badge{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.035);font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--body)}
+  .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px rgba(126,231,135,.18);flex:none}
+  .badge:nth-child(2){color:var(--accent);border-color:rgba(214,255,63,.3)}
+  .badge:nth-child(3){color:var(--cyan);border-color:rgba(95,227,255,.26)}
+
+  h1 .serif{background-image:linear-gradient(100deg,#d6ff3f,#6bf7c8 42%,#5fe3ff 85%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stats b{background-image:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .step b{background-image:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  .btn-accent{background-image:var(--grad);color:#06110b;box-shadow:0 14px 38px -16px rgba(120,255,205,.6)}
+  .btn-accent:hover{background-image:var(--grad);filter:brightness(1.07)}
+  .nav-links a.nav-cta{background-image:var(--grad);color:#06110b}
+  .nav-links a.nav-cta:hover{color:#06110b;filter:brightness(1.07)}
+
+  .price-card{border:1px solid transparent;background:
+      linear-gradient(180deg,#12121d,#0a0a12) padding-box,
+      linear-gradient(140deg,rgba(214,255,63,.5),rgba(95,227,255,.35) 45%,rgba(167,139,250,.55)) border-box;
+    box-shadow:0 40px 100px -50px rgba(120,150,255,.75)}
+  .pc-row:nth-of-type(1) .pc-price{color:var(--accent)}
+  .pc-row:nth-of-type(2) .pc-price{color:var(--cyan)}
+  .pc-row:nth-of-type(3) .pc-price{color:var(--pink)}
+
+  .card{position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 42%),var(--card)}
+  .card::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,var(--card-accent,var(--accent)),transparent 72%)}
+  .cards .card:nth-child(1){--card-accent:var(--accent)}
+  .cards .card:nth-child(2){--card-accent:var(--cyan)}
+  .cards .card:nth-child(3){--card-accent:var(--pink)}
+  .cards .card:nth-child(4){--card-accent:var(--amber)}
+  .card .price{color:var(--card-accent,var(--accent))}
+  .card:hover{border-color:rgba(255,255,255,.24);box-shadow:0 24px 70px -34px var(--card-accent,var(--accent))}
+
+  .plist .hl{background:linear-gradient(90deg,rgba(255,122,200,.16),rgba(167,139,250,.07))}
+  .plist .hl b{color:var(--pink)}
+
+  .work{border-color:rgba(255,255,255,.11)}
+  .work .chip{box-shadow:0 0 24px -10px rgba(126,231,135,.6)}
+
+  .contact{background:
+      radial-gradient(720px 400px at 12% 0,rgba(167,139,250,.18),transparent 70%),
+      radial-gradient(720px 520px at 88% 18%,rgba(255,122,200,.12),transparent 70%)}
+  .cta-h .serif{background-image:linear-gradient(100deg,#ff7ac8,#a78bfa 55%,#5fe3ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  .wordmark{margin:34px 0 0;font-family:var(--display);font-weight:700;font-size:clamp(2.4rem,10.5vw,8.6rem);line-height:.8;letter-spacing:-.05em;white-space:nowrap;overflow:hidden;user-select:none;color:transparent;background-image:linear-gradient(100deg,rgba(214,255,63,.9),rgba(95,227,255,.72) 50%,rgba(167,139,250,.78));-webkit-background-clip:text;background-clip:text}
+
   /* ---------- responsive ---------- */
   @media (max-width:980px){
     .hero-grid{grid-template-columns:1fr}
@@ -293,6 +369,9 @@
     .step:last-child{border-bottom:0}
     .micro{gap:12px;font-size:10px}
     .log pre{font-size:10.5px;line-height:1.7}
+    .wordmark{font-size:8.4vw;letter-spacing:-.06em}
+    .hero-badges{gap:6px}
+    .badge{font-size:9px;padding:6px 10px}
   }
 </style>
 <noscript><style>
@@ -344,6 +423,11 @@
       <div class="hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">Paper plugins <span>·</span> lag <span>·</span> Discord bots</p>
+          <div class="hero-badges">
+            <span class="badge"><i class="dot" aria-hidden="true"></i>Taking small jobs</span>
+            <span class="badge">From €5</span>
+            <span class="badge">Pay after test</span>
+          </div>
           <h1>Your plugin broke.<br>I ship it <span class="serif">fixed.</span></h1>
           <p class="lead">Fixed price agreed in writing, tested before you see it, source included. You pay after you test — and entry jobs start at <b>€5</b>.</p>
           <div class="actions">
@@ -663,6 +747,7 @@ Budget:</pre>
           <div>© <span id="year">2026</span> PirateLeague Dev — Netherlands, CET</div>
           <div><a href="#top">Back to top</a> &nbsp;·&nbsp; <a href="https://builtbybit.com/members/pirateleague.998043/" rel="noopener">BuiltByBit</a> &nbsp;·&nbsp; <a href="https://old.reddit.com/user/pirateleage" rel="noopener">Reddit</a> &nbsp;·&nbsp; Discord 33slaxt</div>
         </div>
+        <div class="wordmark" aria-hidden="true">PIRATELEAGUE</div>
         <p class="disclaimer">LagAudit, TicketDesk and Invoice Reconciler are self-built demo projects, not paid client work. No testimonials, client names or reviews are invented. LagAudit compiles against the Paper API but was not run on a live server; TicketDesk's core is tested but was never connected to Discord without a token; Invoice Reconciler was run end-to-end on the included sample data. Prices are starting points and are confirmed in writing per job.</p>
       </footer>
     </div>
